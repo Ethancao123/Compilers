@@ -31,17 +31,17 @@ LineTerminator = \r|\n|\r\n
 WhiteSpace = {LineTerminator} | [ \t\f]
 
 /* use switch statement to encode DFA */
-%switch
+//%switch
 
 /**
  * Pattern definitions
  */
-Number = '0' | [1-9][0-9]*
+Number = "0" | [1-9][0-9]*
 Identifier = [a-zA-Z][a-zA-Z0-9_]*
-Seperator = '|' | '(' | ')' | '{' | '}' | '[' | ']' | '<' | '>' | '\' | '.' | ';'
-Math = '*' | '+' | '-' | '/' | '!'
-EqualsPrefix = ':' | '>' | '<' | {Math}
-Equals = {EqualsPrefix}'=' | '='
+Seperator = "|" | "(" | ")" | "{" | "}" | "[" | "]" | "<" | ">" | "\\" | "." | ";"
+Math = "*" | "+" | "-" | "/" | "!"
+EqualsPrefix = ":" | ">" | "<" | {Math}
+Equals = {EqualsPrefix}"=" | "="
 
 %%
 /**
