@@ -2,13 +2,10 @@
 import java.io.*;
 import java.util.regex.*;
 
-import javax.lang.model.util.ElementScanner6;
-
-
 /**
  * Scanner is a simple scanner for Compilers and Interpreters (2014-2015) lab exercise 1
  * @author Ethan Cao
- * @version 8/31/21
+ * @version 9/7/21
  */
 public class EthanCScannerLab
 {
@@ -55,11 +52,14 @@ public class EthanCScannerLab
         
     }
 
+    /**
+     * Compiles all the patterns for the Java Regex library
+     */
     private void patternInit()
     {
         letter = Pattern.compile("[a-zA-Z]");
         digit = Pattern.compile("[0-9]");
-        seperator = Pattern.compile("['|' | '(' | ')' | '{' | '}' | '[' | ']' | '<' | '>' | '\\' | '.' | ';']");
+        seperator = Pattern.compile("['|'|'('|')'|'{'|'}'|'['|']'|'<'|'>'|'\\'|'.'|';']");
         operand = Pattern.compile("['+' '-' '*' '/' '!']");
         equalsPrefix = Pattern.compile("['>' '<' ':' '+' '-' '*' '/']");
         //space = Pattern.compile("['' ' ' '\t' '\r' '\n' '\\s']");
@@ -109,7 +109,8 @@ public class EthanCScannerLab
         }
         else
         {
-            throw new ScanErrorException("Illegal character - expected <currentChar> and found <char>");
+            String error = "Illegal character - expected " + currentChar + " and found " + expected;
+            throw new ScanErrorException(error);
         }
     }
 
@@ -123,8 +124,9 @@ public class EthanCScannerLab
     }
 
     /**
-     * Method: nextToken
-     * @return
+     * Gets the next token in the file
+     * @return the next token in the file
+     * @throws ScanErrorException When invalid text is found
      */
     public String nextToken() throws ScanErrorException
     {
@@ -135,14 +137,14 @@ public class EthanCScannerLab
         {
             prefix = "NUM";
             lexeme += currentChar;
-            getNextChar();
-            while(hasNext() && !isWhitespace(currentChar))
+            eat(currentChar);
+            while(hasNext() && !isWhitespace(currentChar) && !isSeperator(currentChar))
             {
                 if(isDigit(currentChar))
                     lexeme += currentChar;
                 else
-                    throw new ScanErrorException("expected a number");
-                getNextChar();
+                    throw new ScanErrorException("expected a number found " + currentChar);
+                eat(currentChar);
             }
         }
         //is identifier
@@ -150,14 +152,14 @@ public class EthanCScannerLab
         {
             prefix = "ID";
             lexeme += currentChar;
-            getNextChar();
-            while(hasNext() && !isWhitespace(currentChar))
+            eat(currentChar);
+            while(hasNext() && !isWhitespace(currentChar) && !isSeperator(currentChar))
             {
                 if(isDigit(currentChar) || isLetter(currentChar))
                     lexeme += currentChar;
                 else
-                    throw new ScanErrorException("expected a identifier");
-                getNextChar();
+                    throw new ScanErrorException("expected a identifier found " + currentChar);
+                eat(currentChar);
             }
         }
         //is a math operator
@@ -165,31 +167,35 @@ public class EthanCScannerLab
         {
             lexeme += currentChar;
             prefix = "MATH";
-            getNextChar();
+            eat(currentChar);
+            //is an equals operator
             if(isEquals(currentChar))
             {
                 lexeme += currentChar;
                 prefix = "EQ";
-                getNextChar();
+                eat(currentChar);
             }
             else if(!isOperand(lexeme.charAt(0)))
-                throw new ScanErrorException("expected an equals sign");
+                throw new ScanErrorException("expected an equals sign found " + currentChar);
         }
+        //is an equals sign
         else if(isEquals(currentChar))
         {
             lexeme += currentChar;
             prefix = "EQ";
-            getNextChar();
+            eat(currentChar);
         }
+        //is a seperator
         else if(isSeperator(currentChar))
         {
             lexeme += currentChar;
             prefix = "SEP";
-            getNextChar();
+            eat(currentChar);
         }
+        //is a whitespace
         else
         {
-            getNextChar();
+            eat(currentChar);
             return "";
         }
         if(lexeme.equals(" "))
@@ -199,7 +205,9 @@ public class EthanCScannerLab
     }    
 
     /**
-     * 
+     * Determines if a character is a letter
+     * @param input the character to checked
+     * @return true if input is a letter; Otherwise, false
      */
     public static boolean isLetter(char input)
     {
@@ -218,30 +226,55 @@ public class EthanCScannerLab
         return m.matches();
     }
 
+    /**
+     * Determines if a character is a seperator
+     * @param input the character to check
+     * @return true if input is a seperator; Otherwise, false
+     */
     public static boolean isSeperator(char input)
     {
         Matcher m = seperator.matcher("" + input);
         return m.matches();
     }
 
+    /**
+     * Determines if a character is an operand
+     * @param input the character to check
+     * @return true if input is a operand; Otherwise, false
+     */
     public static boolean isOperand(char input)
     {
         Matcher m = operand.matcher("" + input);
         return m.matches();
     }
 
+    /**
+     * Determiens if a character is an equals prefix
+     * @param input the character to check
+     * @return true if input is an equals prefix; Otherwise, false
+     */
     public static boolean isEqualsPrefix(char input)
     {
         Matcher m = equalsPrefix.matcher("" + input);
         return m.matches();
     }
 
+    /**
+     * Determiens if a character is a whitespace
+     * @param input the character to check
+     * @return true if input is a whitespace; Otherwise, false
+     */
     public static boolean isWhitespace(char input)
     {
-        Matcher m = space.matcher("" + input);
+        Matcher m = space.matcher(String.valueOf(input));
         return m.matches();
     }
 
+    /**
+     * Determiens if a character is an equals sign
+     * @param input the character to check
+     * @return true if input is a equals sign; Otherwise, false
+     */
     public static boolean isEquals(char input)
     {
         Matcher m = equals.matcher("" + input);

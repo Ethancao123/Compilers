@@ -19,7 +19,7 @@ public class ScanErrorException extends Exception
     }
     /**
      * Constructor for ScanErrorObjects that includes a reason for the error
-     * @param reason
+     * @param reason The cause of the Scan Error Exception
      */
     public ScanErrorException(String reason)
     {

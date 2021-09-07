@@ -9,6 +9,7 @@
 *
 * @author  Ethan Cao
 * @author  John Zeng
+* @author  Allen Boyce
 * @version 9/6/2021
 * 
 */
@@ -19,7 +20,7 @@ import java.io.*;
 
 // See https://github.com/jflex-de/jflex/issues/222
 @SuppressWarnings("FallThrough")
-public class EthanCScanner {
+public class JFlexScanner {
 
   /** This character denotes the end of file. */
   public static final int YYEOF = -1;
@@ -293,7 +294,7 @@ public class EthanCScanner {
    *
    * @param in the java.io.Reader to read input from.
    */
-  public EthanCScanner(java.io.Reader in) {
+  public JFlexScanner(java.io.Reader in) {
     this.zzReader = in;
   }
 

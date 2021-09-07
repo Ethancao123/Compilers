@@ -1,6 +1,7 @@
 {
     "java.project.sourcePaths": [
-        "JFlexLab/EthanCScanner/src",
-        "ScannerLab/EthanCScannerLab/src"
+        "ScannerLab/EthanCScannerLab/src",
+        "JFlexLab/JFlexScanner/src",
+        "ScannerLab/scanner/src"
     ]
 }

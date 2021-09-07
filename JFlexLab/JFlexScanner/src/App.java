@@ -5,6 +5,7 @@ import java.io.*;
  * 
  * @author Ethan Cao
  * @author John Zeng
+ * @author Allen Boyce
  * @version 9/6/2021
  */
 public class App 
@@ -18,7 +19,7 @@ public class App
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
         BufferedReader br = new BufferedReader(new FileReader(new File("JFlexLab/test.txt")));
-        EthanCScannerLab scan = new EthanCScannerLab(br);
+        JFlexScanner scan = new JFlexScanner(br);
         String token = "";
         do
         {
