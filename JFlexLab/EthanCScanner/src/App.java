@@ -1,7 +1,22 @@
 import java.io.*;
 
-public class App {
-    public static void main(String[] args) throws Exception {
+/**
+ * Runner for the JFlex generated scanner
+ * 
+ * @author Ethan Cao
+ * @author John Zeng
+ * @version 9/6/2021
+ */
+public class App 
+{
+    /**
+     * Creates a stream of tokens from "test.txt" and prints them to the terminal
+     * @param args String arguments
+     * @throws FileNotFoundException when "test.txt" is not found
+     * @throws IOException if a read error occurs
+     */
+    public static void main(String[] args) throws FileNotFoundException, IOException
+    {
         BufferedReader br = new BufferedReader(new FileReader(new File("JFlexLab/test.txt")));
         EthanCScanner scan = new EthanCScanner(br);
         String token = "";
