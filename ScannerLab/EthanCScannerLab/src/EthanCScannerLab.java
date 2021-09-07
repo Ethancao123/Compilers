@@ -2,22 +2,26 @@
 import java.io.*;
 import java.util.regex.*;
 
+import javax.lang.model.util.ElementScanner6;
+
 
 /**
  * Scanner is a simple scanner for Compilers and Interpreters (2014-2015) lab exercise 1
  * @author Ethan Cao
  * @version 8/31/21
  */
-public class Scanner
+public class EthanCScannerLab
 {
     private BufferedReader in;
     private char currentChar;
     private boolean eof;
     private static Pattern letter;
     private static Pattern digit;
+    private static Pattern seperator;
     private static Pattern operand;
-    private static Pattern operandPrefix;
+    private static Pattern equalsPrefix;
     private static Pattern space;
+    private static Pattern equals;
 
     /**
      * Scanner constructor for construction of a scanner that 
@@ -27,7 +31,7 @@ public class Scanner
      * Scanner lex = new Scanner(inStream);
      * @param inStream the input stream to use
      */
-    public Scanner(InputStream inStream)
+    public EthanCScannerLab(InputStream inStream)
     {
         patternInit();
         in = new BufferedReader(new InputStreamReader(inStream));
@@ -42,7 +46,7 @@ public class Scanner
      * Usage: Scanner lex = new Scanner(input_string);
      * @param inString the string to scan
      */
-    public Scanner(String inString)
+    public EthanCScannerLab(String inString)
     {
         patternInit();
         in = new BufferedReader(new StringReader(inString));
@@ -55,9 +59,12 @@ public class Scanner
     {
         letter = Pattern.compile("[a-zA-Z]");
         digit = Pattern.compile("[0-9]");
-        operand = Pattern.compile("['=' '+' '-' '*' '/' '%' '(' ')']");
-        operandPrefix = Pattern.compile("['>' '<' ':']");
-        space = Pattern.compile("['' '\t' '\r' '\n']");
+        seperator = Pattern.compile("['|' | '(' | ')' | '{' | '}' | '[' | ']' | '<' | '>' | '\\' | '.' | ';']");
+        operand = Pattern.compile("['+' '-' '*' '/' '!']");
+        equalsPrefix = Pattern.compile("['>' '<' ':' '+' '-' '*' '/']");
+        //space = Pattern.compile("['' ' ' '\t' '\r' '\n' '\\s']");
+        space = Pattern.compile("[\\s]");
+        equals = Pattern.compile("['=']");
     }
 
     /**
@@ -121,42 +128,84 @@ public class Scanner
      */
     public String nextToken() throws ScanErrorException
     {
+        String prefix = "No Prefix";
         String lexeme = "";
+        //is a number
         if(isDigit(currentChar))
         {
+            prefix = "NUM";
             lexeme += currentChar;
+            getNextChar();
             while(hasNext() && !isWhitespace(currentChar))
             {
-                getNextChar();
                 if(isDigit(currentChar))
                     lexeme += currentChar;
                 else
                     throw new ScanErrorException("expected a number");
+                getNextChar();
             }
         }
-        if(isLetter(currentChar))
+        //is identifier
+        else if(isLetter(currentChar))
         {
+            prefix = "ID";
             lexeme += currentChar;
+            getNextChar();
             while(hasNext() && !isWhitespace(currentChar))
             {
-                getNextChar();
                 if(isDigit(currentChar) || isLetter(currentChar))
                     lexeme += currentChar;
                 else
-                    throw new ScanErrorException("expected a identifier")
+                    throw new ScanErrorException("expected a identifier");
+                getNextChar();
             }
         }
-        if(isOperand(currentChar))
+        //is a math operator
+        else if(isEqualsPrefix(currentChar))
         {
             lexeme += currentChar;
-            if(current)
-            //check if prefix
-            //check if operand
-            //add to lexeme
+            prefix = "MATH";
+            getNextChar();
+            if(isEquals(currentChar))
+            {
+                lexeme += currentChar;
+                prefix = "EQ";
+                getNextChar();
+            }
+            else if(!isOperand(lexeme.charAt(0)))
+                throw new ScanErrorException("expected an equals sign");
         }
-        return lexeme;
-
+        else if(isEquals(currentChar))
+        {
+            lexeme += currentChar;
+            prefix = "EQ";
+            getNextChar();
+        }
+        else if(isSeperator(currentChar))
+        {
+            lexeme += currentChar;
+            prefix = "SEP";
+            getNextChar();
+        }
+        else
+        {
+            getNextChar();
+            return "";
+        }
+        if(lexeme.equals(" "))
+            return "";
+        lexeme = lexeme.strip();
+        return "" + prefix + " : " + lexeme;
     }    
+
+    /**
+     * 
+     */
+    public static boolean isLetter(char input)
+    {
+        Matcher m = letter.matcher("" + input);
+        return m.matches();
+    }
 
     /**
      * Determines if a character is a digit
@@ -169,18 +218,9 @@ public class Scanner
         return m.matches();
     }
 
-    /**
-     * 
-     */
-    public static boolean isLetter(char input)
+    public static boolean isSeperator(char input)
     {
-        Matcher m = letter.matcher("" + input);
-        return m.matches();
-    }
-
-    public static boolean isWhitespace(char input)
-    {
-        Matcher m = space.matcher("" + input);
+        Matcher m = seperator.matcher("" + input);
         return m.matches();
     }
 
@@ -190,10 +230,21 @@ public class Scanner
         return m.matches();
     }
 
-    public static boolean isOperandPrefix(char input)
+    public static boolean isEqualsPrefix(char input)
     {
-        Matcher m = operandPrefix.matcher("" + input);
+        Matcher m = equalsPrefix.matcher("" + input);
         return m.matches();
     }
 
+    public static boolean isWhitespace(char input)
+    {
+        Matcher m = space.matcher("" + input);
+        return m.matches();
+    }
+
+    public static boolean isEquals(char input)
+    {
+        Matcher m = equals.matcher("" + input);
+        return m.matches();
+    }
 }

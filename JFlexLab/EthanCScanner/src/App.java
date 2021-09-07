@@ -18,7 +18,7 @@ public class App
     public static void main(String[] args) throws FileNotFoundException, IOException
     {
         BufferedReader br = new BufferedReader(new FileReader(new File("JFlexLab/test.txt")));
-        EthanCScanner scan = new EthanCScanner(br);
+        EthanCScannerLab scan = new EthanCScannerLab(br);
         String token = "";
         do
         {

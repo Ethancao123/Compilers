@@ -8,6 +8,7 @@
 * This file defines a simple lexer for the compilers course
 *
 * @author  Ethan Cao
+* @author  John Zeng
 * @version 9/6/2021
 * 
 */
