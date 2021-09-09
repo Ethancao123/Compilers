@@ -1,10 +1,12 @@
-package scanner;
+package JFlexScanner;
 
 /**
 * This file defines a simple lexer for the compilers course
 *
 * @author  Ethan Cao
-* @version 9/6/2021
+* @author  John Zeng
+* @author  Allen Boyce
+* @version 9/9/2021
 * 
 */
 
@@ -16,7 +18,7 @@ import java.io.*;
 /* specify that the class will be called Scanner and the function to get the next
  * token is called nextToken.  
  */
-%class Scanner
+%class JFlexScanner
 %unicode
 %line
 %public
@@ -47,8 +49,8 @@ Equals = {EqualsPrefix}"=" | "="
 /**
  * lexical rules
  */
-[a-zA-Z][a-zA-Z0-9_]*	{return "ID: " + yytext();}
-[0-9]+			{return "NUM:" + yytext();}
+{Identifier}	{return "ID: " + yytext();}
+{Number}			{return "NUM:" + yytext();}
 {Seperator}           {return "SEP: " + yytext();}
 {Math}          {return "MATH: " + yytext();}
 {Equals}            {return "EQ: " + yytext();}
