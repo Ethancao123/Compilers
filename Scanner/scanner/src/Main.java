@@ -17,7 +17,7 @@ public class Main
      */
     public static void main(String[] args) throws FileNotFoundException, ScanErrorException
     {
-        EthanCScannerLab in = new EthanCScannerLab(new FileInputStream("ScannerLab/test.txt"));
+        EthanCScannerLab in = new EthanCScannerLab(new FileInputStream("Scanner/test.txt"));
         while(in.hasNext())
         {
             String token = in.nextToken();
