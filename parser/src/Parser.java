@@ -38,4 +38,23 @@ public class Parser
             throw new IllegalArgumentException("Expected " + currentToken + " found " + expected);
         }
     }
+
+    /**
+     * @precondition current token begins an IF statement 
+     * @postcondition all tokens in statement have been 
+     *               eaten; current token is first one 
+     *               after the IF statement 
+     * @throws ScanErrorException If an illegal character is scanned
+     */
+    private void parseIf() throws ScanErrorException
+    { 
+        eat("IF"); 
+        //... 
+    }
+
+    private int parseNumber()
+    {
+        int num = Integer.parseInt(//string here)
+        eat
+    }
 }
