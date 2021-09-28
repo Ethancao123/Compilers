@@ -55,6 +55,6 @@ public class Parser
     private int parseNumber()
     {
         int num = Integer.parseInt(//string here)
-        eat
+        eat("");
     }
 }

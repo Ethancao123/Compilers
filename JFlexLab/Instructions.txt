@@ -1,7 +1,0 @@
-Same groups as the Reg Ex presentations. Please upload your .flex file, Auto 
-Generated Scanner File and input text file that you used for the tokenization 
-demo as a single archive file. Look at the samples I've provided and come up 
-with your own reg ex to identify and classify the sample text file you provide 
-into lexemes or tokens.
-
-Although this is a group project I want every person to turn in their own copy of the code for feedback.

@@ -60,7 +60,7 @@ public class EthanCScannerLab
         letter = Pattern.compile("[a-zA-Z]");
         digit = Pattern.compile("[0-9]");
         seperator = Pattern.compile("['|'|'('|')'|'{'|'}'|'['|']'|'<'|'>'|'\\'|'.'|';']");
-        operand = Pattern.compile("['+' '-' '*' '/' '!']");
+        operand = Pattern.compile("['>' '<' '+' '-' '*' '/' '!']");
         equalsPrefix = Pattern.compile("['>' '<' ':' '+' '-' '*' '/']");
         //space = Pattern.compile("['' ' ' '\t' '\r' '\n' '\\s']");
         space = Pattern.compile("[\\s]");
@@ -175,33 +175,33 @@ public class EthanCScannerLab
                 prefix = "EQ";
                 eat(currentChar);
             }
-            else if(!isOperand(lexeme.charAt(0)))
-                throw new ScanErrorException("expected an equals sign found " + currentChar);
+            //else if(!isOperand(lexeme.charAt(0)))
+            //    throw new ScanErrorException("expected an equals sign found " + currentChar);
+            else if(isEquals(currentChar))
+            {
+                lexeme += currentChar;
+                prefix = "EQ";
+                eat(currentChar);
+            }
+            //is a seperator
+            else if(isSeperator(currentChar))
+            {
+                lexeme += currentChar;
+                prefix = "SEP";
+                eat(currentChar);
+            }
         }
-        //is an equals sign
-        else if(isEquals(currentChar))
-        {
-            lexeme += currentChar;
-            prefix = "EQ";
-            eat(currentChar);
-        }
-        //is a seperator
-        else if(isSeperator(currentChar))
-        {
-            lexeme += currentChar;
-            prefix = "SEP";
-            eat(currentChar);
-        }
-        //is a whitespace
+            //is a whitespace
         else
         {
             eat(currentChar);
             return "";
         }
         if(lexeme.equals(" "))
-            return "";
+                return "";
         lexeme = lexeme.strip();
         return "" + prefix + " : " + lexeme;
+        
     }    
 
     /**
