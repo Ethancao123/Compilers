@@ -48,9 +48,12 @@ public class Parser
      */
     private void parseIf() throws ScanErrorException
     { 
-        eat("IF"); 
+        eat("ID : IF"); 
+        while(currentToken.equals(""))
         //... 
     }
+
+    private void parseExpression
 
     private int parseNumber()
     {
