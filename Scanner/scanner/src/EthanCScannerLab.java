@@ -130,6 +130,11 @@ public class EthanCScannerLab
      */
     public String nextToken() throws ScanErrorException
     {
+        if(currentChar == '-')
+        {
+            eat(currentChar);
+            return "MATH : -";
+        }
         String prefix = "No Prefix";
         String lexeme = "";
         //is a number
