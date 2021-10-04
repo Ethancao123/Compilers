@@ -1,1 +1,2 @@
-IF n < 0 THEN n := +n; abs := n;
+WRITELN(-(-3)); 
+.

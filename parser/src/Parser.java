@@ -1,3 +1,4 @@
+import java.lang.NumberFormatException;
 /**
  * Parser for a Pascal Compiler
  * 
@@ -32,6 +33,8 @@ public class Parser
         if(expected.equals(currentToken))
         {
             currentToken = scanner.nextToken();
+            while(currentToken.isEmpty() && scanner.hasNext())
+                scanner.nextToken();
         }
         else
         {
@@ -40,6 +43,7 @@ public class Parser
     }
 
     /**
+     * Parses an if statement
      * @precondition current token begins an IF statement 
      * @postcondition all tokens in statement have been 
      *               eaten; current token is first one 
@@ -49,15 +53,65 @@ public class Parser
     private void parseIf() throws ScanErrorException
     { 
         eat("ID : IF"); 
-        while(currentToken.equals(""))
-        //... 
+        while(!currentToken.equals("SEP : ;"))
+            eat(currentToken);
+        eat("SEP : ;");
     }
 
-    private void parseExpression
-
-    private int parseNumber()
+    /**
+     * Parses a number
+     * @precondition current token is an integer
+     * @postcondition number token has been eaten
+     * @return the value of the parsed integer
+     * @throws ScanErrorException if an invalid value is scanned
+     */
+    private int parseNumber() throws ScanErrorException
     {
-        int num = Integer.parseInt(//string here)
-        eat("");
+        int num = Integer.parseInt(currentToken.substring(6)); //removes prefix
+        eat(currentToken);
+        return num;
+    }
+
+    /**
+     * Parses a WRITELN Statement and prints the number being written
+     * @precondition current token is a statement
+     * @postcondition statement token has been eaten
+     * @throws ScanErrorException if an invalid value is scanned
+     */
+    public void parseStatement() throws ScanErrorException
+    {
+        eat("ID : WRITELN");
+        eat("SEP : (");
+        System.out.println(parseFactor());
+        eat("SEP : )");
+        eat("SEP : ;");
+    }
+
+    /**
+     * Parses a factor
+     * @precondition current token is a factor
+     * @postcondition factor token has been eaten
+     * @return the value of the factor
+     * @throws ScanErrorException if an invalid character is scanned
+     */
+    public int parseFactor() throws ScanErrorException
+    {
+        if(currentToken.substring(0,3).equals("NUM"))
+        {
+            return parseNumber();
+        }
+        if(currentToken.equals("SEP : ("))
+        {
+            eat(currentToken);
+            int returned = parseFactor();
+            eat("SEP : )");
+            return returned;
+        }
+        if(currentToken.equals("MATH : -"))
+        {
+            eat(currentToken);
+            return parseFactor() * -1;
+        }
+        return 0;
     }
 }

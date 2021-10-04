@@ -140,6 +140,16 @@ public class EthanCScannerLab
             eat(currentChar);
             return "SEP : ;";
         }
+        if(currentChar == ')')
+        {
+            eat(currentChar);
+            return "SEP : )";
+        }
+        if(currentChar == '(')
+        {
+            eat(currentChar);
+            return "SEP : (";
+        }
         String prefix = "No Prefix";
         String lexeme = "";
         //is a number
