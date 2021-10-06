@@ -1,4 +1,3 @@
-import java.lang.NumberFormatException;
 /**
  * Parser for a Pascal Compiler
  * 
@@ -32,9 +31,13 @@ public class Parser
     {
         if(expected.equals(currentToken))
         {
+            System.out.println("eaten: " + currentToken);
             currentToken = scanner.nextToken();
-            while(currentToken.isEmpty() && scanner.hasNext())
-                scanner.nextToken();
+            while(currentToken.trim().isEmpty() && scanner.hasNext())
+            {
+                System.out.println("eaten: " + currentToken);
+                currentToken = scanner.nextToken();
+            }
         }
         else
         {
@@ -76,15 +79,17 @@ public class Parser
      * Parses a WRITELN Statement and prints the number being written
      * @precondition current token is a statement
      * @postcondition statement token has been eaten
+     * @return the result of the statement
      * @throws ScanErrorException if an invalid value is scanned
      */
-    public void parseStatement() throws ScanErrorException
+    public int parseStatement() throws ScanErrorException
     {
         eat("ID : WRITELN");
         eat("SEP : (");
-        System.out.println(parseFactor());
+        int returned = (parseTerm());
         eat("SEP : )");
         eat("SEP : ;");
+        return returned;
     }
 
     /**
@@ -103,7 +108,7 @@ public class Parser
         if(currentToken.equals("SEP : ("))
         {
             eat(currentToken);
-            int returned = parseFactor();
+            int returned = parseTerm();
             eat("SEP : )");
             return returned;
         }
@@ -112,6 +117,35 @@ public class Parser
             eat(currentToken);
             return parseFactor() * -1;
         }
+        eat(currentToken);
         return 0;
+    }
+
+    /**
+     * Parses a term 
+     * @precondition the current token is a term
+     * @postcondition term tokens have been eaten
+     * @return the result of the term math
+     * @throws ScanErrorException if an invalid value is scanned
+     */
+    public int parseTerm() throws ScanErrorException
+    {
+        int total = parseFactor();
+        while(true)
+        {
+            if(currentToken.equals("MATH : *"))
+            {
+                eat(currentToken);
+                total *= parseFactor();
+            }
+            else if(currentToken.equals("MATH : /"))
+            {
+                eat(currentToken);
+                total /= parseFactor();
+            }
+            else
+                break;
+        }
+        return total;
     }
 }
