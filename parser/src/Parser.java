@@ -79,17 +79,25 @@ public class Parser
      * Parses a WRITELN Statement and prints the number being written
      * @precondition current token is a statement
      * @postcondition statement token has been eaten
-     * @return the result of the statement
      * @throws ScanErrorException if an invalid value is scanned
      */
-    public int parseStatement() throws ScanErrorException
+    public void parseStatement() throws ScanErrorException
     {
-        eat("ID : WRITELN");
-        eat("SEP : (");
-        int returned = (parseTerm());
-        eat("SEP : )");
-        eat("SEP : ;");
-        return returned;
+        try 
+        {
+            eat("ID : BEGIN");
+            parseStatements();
+            eat("ID : END");
+        } 
+        catch (Exception e) 
+        {
+            eat("ID : WRITELN");
+            eat("SEP : (");
+            int returned = (parseExpression());
+            eat("SEP : )");
+            eat("SEP : ;");
+            System.out.println(returned);
+        }   
     }
 
     /**
@@ -108,7 +116,7 @@ public class Parser
         if(currentToken.equals("SEP : ("))
         {
             eat(currentToken);
-            int returned = parseTerm();
+            int returned = parseExpression();
             eat("SEP : )");
             return returned;
         }
@@ -151,7 +159,15 @@ public class Parser
 
     public int parseExpression() throws ScanErrorException
     {
-        int total = parseFactor();
+        int total = 0;
+        try 
+        {
+            total = parseTerm();
+        } 
+        catch (Exception e) 
+        {
+            return total;
+        }
         while(true)
         {
             if(currentToken.equals("MATH : +"))
@@ -162,11 +178,36 @@ public class Parser
             else if(currentToken.equals("MATH : -"))
             {
                 eat(currentToken);
-                total -= parseFactor();
+                total -= parseTerm();
             }
+            // else if(currentToken.equals("MATH : *"))
+            // {
+            //     total *= parseTerm();
+            //     eat(currentToken);
+            // }
+            // else if(currentToken.equals("MATH : /"))
+            // {
+            //     total /= parseTerm();
+            //     eat(currentToken);
+            // }
             else
                 break;
         }
         return total;
+    }
+
+    public void parseStatements()
+    {
+        while(true)
+        {
+            try 
+            {
+                parseStatement();
+            } 
+            catch (Exception e) 
+            {
+                break;
+            }
+        }
     }
 }
