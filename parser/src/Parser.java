@@ -148,4 +148,25 @@ public class Parser
         }
         return total;
     }
+
+    public int parseExpression() throws ScanErrorException
+    {
+        int total = parseFactor();
+        while(true)
+        {
+            if(currentToken.equals("MATH : +"))
+            {
+                eat(currentToken);
+                total += parseTerm();
+            }
+            else if(currentToken.equals("MATH : -"))
+            {
+                eat(currentToken);
+                total -= parseFactor();
+            }
+            else
+                break;
+        }
+        return total;
+    }
 }
