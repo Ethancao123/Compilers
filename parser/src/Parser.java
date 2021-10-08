@@ -1,3 +1,5 @@
+import java.util.Map;
+
 /**
  * Parser for a Pascal Compiler
  * 
@@ -8,7 +10,8 @@ public class Parser
 {
     private EthanCScannerLab scanner;
     private String currentToken;
-    
+    private Map<String, Integer> variables;
+
     /**
      * Constructor for objects of the Parser Class
      * @param scan the scanner to request tokens from
@@ -157,6 +160,13 @@ public class Parser
         return total;
     }
 
+    /**
+     * Parses an Expression 
+     * @precondition the current token is an expression
+     * @postcondition expression tokens have been eaten
+     * @return the result of the expression
+     * @throws ScanErrorException if an invalid character is scanned
+     */
     public int parseExpression() throws ScanErrorException
     {
         int total = 0;
@@ -168,6 +178,16 @@ public class Parser
         {
             return total;
         }
+        if(currentToken.substring(0,2).equals("ID"))
+            try 
+            {
+                eat(currentToken);
+                eat("EQ : :=");
+            } 
+            catch (Exception e) 
+            {
+                //TODO: handle exception
+            }
         while(true)
         {
             if(currentToken.equals("MATH : +"))
@@ -180,22 +200,17 @@ public class Parser
                 eat(currentToken);
                 total -= parseTerm();
             }
-            // else if(currentToken.equals("MATH : *"))
-            // {
-            //     total *= parseTerm();
-            //     eat(currentToken);
-            // }
-            // else if(currentToken.equals("MATH : /"))
-            // {
-            //     total /= parseTerm();
-            //     eat(currentToken);
-            // }
             else
                 break;
         }
         return total;
     }
 
+    /**
+     * Parses multiple statements
+     * @precondition the curent token is the start of multiple statements
+     * @postcondition all the statements have been eaten
+     */
     public void parseStatements()
     {
         while(true)
