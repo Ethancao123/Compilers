@@ -10,7 +10,7 @@ public class Parser
 {
     private EthanCScannerLab scanner;
     private String currentToken;
-    private Map<String, Integer> variables = new HashMap();
+    private Map<String, Integer> variables = new HashMap<String, Integer>();
 
     /**
      * Constructor for objects of the Parser Class
@@ -46,7 +46,8 @@ public class Parser
             }
             else
             {
-                throw new IllegalArgumentException("Expected " + currentToken + " found " + expected);
+                String error = "Expected " + currentToken + " found " + expected;
+                throw new IllegalArgumentException(error);
             }
         }
     }
@@ -57,7 +58,7 @@ public class Parser
      * @postcondition all tokens in statement have been 
      *               eaten; current token is first one 
      *               after the IF statement 
-     * @throws ScanErrorException If an illegal character is scanned
+     * @throws ScanErrorException when an illegal character is scanned
      */
     private void parseIf() throws ScanErrorException
     { 
@@ -72,7 +73,7 @@ public class Parser
      * @precondition current token is an integer
      * @postcondition number token has been eaten
      * @return the value of the parsed integer
-     * @throws ScanErrorException if an invalid value is scanned
+     * @throws ScanErrorException when an illegal character is scanned
      */
     private int parseNumber() throws ScanErrorException
     {
@@ -85,7 +86,7 @@ public class Parser
      * Parses a WRITELN Statement and prints the number being written
      * @precondition current token is a statement
      * @postcondition statement token has been eaten
-     * @throws ScanErrorException if an invalid value is scanned
+     * @throws ScanErrorException when an illegal character is scanned
      */
     public void parseStatement() throws ScanErrorException
     {
@@ -120,7 +121,7 @@ public class Parser
      * @precondition current token is a factor
      * @postcondition factor token has been eaten
      * @return the value of the factor
-     * @throws ScanErrorException if an invalid character is scanned
+     * @throws ScanErrorException when an illegal character is scanned
      */
     public int parseFactor() throws ScanErrorException
     {
@@ -155,7 +156,7 @@ public class Parser
      * @precondition the current token is a term
      * @postcondition term tokens have been eaten
      * @return the result of the term math
-     * @throws ScanErrorException if an invalid value is scanned
+     * @throws ScanErrorException when an illegal character is scanned
      */
     public int parseTerm() throws ScanErrorException
     {
@@ -183,7 +184,7 @@ public class Parser
      * @precondition the current token is an expression
      * @postcondition expression tokens have been eaten
      * @return the result of the expression
-     * @throws ScanErrorException if an invalid character is scanned
+     * @throws ScanErrorException when an illegal character is scanned
      */
     public int parseExpression() throws ScanErrorException
     {
@@ -234,6 +235,12 @@ public class Parser
         }
     }
 
+    /**
+     * Parses an assignment
+     * @precondition the current token is the start of an assignment
+     * @postcondition all assignment tokens have been eaten
+     * @throws ScanErrorException when an illegal character is scanned
+     */
     public void parseAssignment() throws ScanErrorException
     {
         String temp = currentToken;
