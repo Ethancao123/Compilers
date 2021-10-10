@@ -103,6 +103,8 @@ public class EthanCScannerLab
      */
     private void eat(char expected) throws ScanErrorException
     {
+        if(eof)
+            throw new ScanErrorException("End of file has been reached");
         if(currentChar == expected)
         {
             getNextChar();

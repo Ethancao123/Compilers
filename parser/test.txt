@@ -1,1 +1,1 @@
-BEGIN WRITELN(1); WRITELN(2); BEGIN WRITELN(3); END; END; .
+BEGIN x := 2; y := x + 1; x := x + y; WRITELN(x * y); END; . 

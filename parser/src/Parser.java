@@ -1,4 +1,4 @@
-import java.util.Map;
+import java.util.*;
 
 /**
  * Parser for a Pascal Compiler
@@ -10,7 +10,7 @@ public class Parser
 {
     private EthanCScannerLab scanner;
     private String currentToken;
-    private Map<String, Integer> variables;
+    private Map<String, Integer> variables = new HashMap();
 
     /**
      * Constructor for objects of the Parser Class
@@ -32,19 +32,22 @@ public class Parser
      */
     private void eat(String expected) throws IllegalArgumentException, ScanErrorException
     {
-        if(expected.equals(currentToken))
+        if(scanner.hasNext())
         {
-            System.out.println("eaten: " + currentToken);
-            currentToken = scanner.nextToken();
-            while(currentToken.trim().isEmpty() && scanner.hasNext())
+            if(expected.equals(currentToken))
             {
-                System.out.println("eaten: " + currentToken);
+                //System.out.println("eaten: " + currentToken);
                 currentToken = scanner.nextToken();
+                while(currentToken.trim().isEmpty() && scanner.hasNext())
+                {
+                    //System.out.println("eaten: " + currentToken);
+                    currentToken = scanner.nextToken();
+                }
             }
-        }
-        else
-        {
-            throw new IllegalArgumentException("Expected " + currentToken + " found " + expected);
+            else
+            {
+                throw new IllegalArgumentException("Expected " + currentToken + " found " + expected);
+            }
         }
     }
 
@@ -91,16 +94,25 @@ public class Parser
             eat("ID : BEGIN");
             parseStatements();
             eat("ID : END");
+            eat("SEP : ;");
         } 
         catch (Exception e) 
         {
-            eat("ID : WRITELN");
-            eat("SEP : (");
-            int returned = (parseExpression());
-            eat("SEP : )");
-            eat("SEP : ;");
-            System.out.println(returned);
-        }   
+            try 
+            {
+                eat("ID : WRITELN");
+                eat("SEP : (");
+                int returned = (parseExpression());
+                eat("SEP : )");
+                eat("SEP : ;");
+                System.out.println(returned);
+            } 
+            catch (Exception ee) 
+            {
+                parseAssignment();
+            }
+            
+        } 
     }
 
     /**
@@ -116,17 +128,23 @@ public class Parser
         {
             return parseNumber();
         }
-        if(currentToken.equals("SEP : ("))
+        else if(currentToken.equals("SEP : ("))
         {
             eat(currentToken);
             int returned = parseExpression();
             eat("SEP : )");
             return returned;
         }
-        if(currentToken.equals("MATH : -"))
+        else if(currentToken.equals("MATH : -"))
         {
             eat(currentToken);
             return parseFactor() * -1;
+        }
+        else if(currentToken.substring(0,2).equals("ID") && variables.get(currentToken) != null)
+        {
+            String temp = currentToken;
+            eat(currentToken);
+            return variables.get(temp);
         }
         eat(currentToken);
         return 0;
@@ -178,16 +196,6 @@ public class Parser
         {
             return total;
         }
-        if(currentToken.substring(0,2).equals("ID"))
-            try 
-            {
-                eat(currentToken);
-                eat("EQ : :=");
-            } 
-            catch (Exception e) 
-            {
-                //TODO: handle exception
-            }
         while(true)
         {
             if(currentToken.equals("MATH : +"))
@@ -213,7 +221,7 @@ public class Parser
      */
     public void parseStatements()
     {
-        while(true)
+        while(scanner.hasNext())
         {
             try 
             {
@@ -224,5 +232,15 @@ public class Parser
                 break;
             }
         }
+    }
+
+    public void parseAssignment() throws ScanErrorException
+    {
+        String temp = currentToken;
+        eat(currentToken);
+        eat("EQ : :=");
+        variables.put(temp, parseExpression());
+        //System.out.println(variables);
+        eat("SEP : ;");
     }
 }
