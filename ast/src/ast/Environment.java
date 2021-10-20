@@ -13,13 +13,16 @@ public class Environment {
      */
     public void setVariable(String variable, int value)
     {
-
+        variables.put(variable, value);
     }
 
     public int getVariable(String variable)
     {
-
+        return variables.get(variable);
     }
 
-
+    public boolean hasVariable(String variable)
+    {
+        return variables.get(variable) == null;
+    }
 }

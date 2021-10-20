@@ -1,6 +1,6 @@
-import java.lang.Thread.State;
 import java.util.*;
 import ast.*;
+import ast.Number;
 
 /**
  * Parser for a Pascal Compiler
@@ -12,7 +12,7 @@ public class Parser
 {
     private EthanCScannerLab scanner;
     private String currentToken;
-    private Map<String, Integer> variables = new HashMap<String, Integer>();
+    private Environment env = new Environment();
 
     /**
      * Constructor for objects of the Parser Class
@@ -38,7 +38,7 @@ public class Parser
         {
             if(expected.equals(currentToken))
             {
-                //System.out.println("eaten: " + currentToken);
+                System.out.println("eaten: " + currentToken);
                 currentToken = scanner.nextToken();
                 while(currentToken.trim().isEmpty() && scanner.hasNext())
                 {
@@ -77,11 +77,11 @@ public class Parser
      * @return the value of the parsed integer
      * @throws ScanErrorException when an illegal character is scanned
      */
-    private int parseNumber() throws ScanErrorException
+    private Number parseNumber() throws ScanErrorException
     {
         int num = Integer.parseInt(currentToken.substring(6)); //removes prefix
         eat(currentToken);
-        return num;
+        return new Number(num);
     }
 
     /**
@@ -92,10 +92,11 @@ public class Parser
      */
     public Statement parseStatement() throws ScanErrorException
     {
+        Statement returned;
         try 
         {
             eat("ID : BEGIN");
-            parseStatements();
+            returned = parseStatements();
             eat("ID : END");
             eat("SEP : ;");
         } 
@@ -108,14 +109,15 @@ public class Parser
                 Expression exp = parseExpression();
                 eat("SEP : )");
                 eat("SEP : ;");
-                return new Writeln(exp);
+                returned = new Writeln(exp);
             } 
             catch (Exception ee) 
             {
-                parseAssignment();
+                returned = parseAssignment();
             }
             
         } 
+        return returned;
     }
 
     /**
@@ -125,32 +127,33 @@ public class Parser
      * @return the value of the factor
      * @throws ScanErrorException when an illegal character is scanned
      */
-    public int parseFactor() throws ScanErrorException
+    public Expression parseFactor() throws ScanErrorException
     {
+        System.out.println("parsing factor");
+        Expression returned = null;
         if(currentToken.substring(0,3).equals("NUM"))
         {
-            return parseNumber();
+            returned = parseNumber();
         }
         else if(currentToken.equals("SEP : ("))
         {
             eat(currentToken);
-            int returned = parseExpression();
+            returned = parseExpression();
             eat("SEP : )");
-            return returned;
         }
         else if(currentToken.equals("MATH : -"))
         {
             eat(currentToken);
-            return parseFactor() * -1;
+            returned = new BinOp("*", parseFactor(), new Number(-1));
         }
-        else if(currentToken.substring(0,2).equals("ID") && variables.get(currentToken) != null)
+        else if(currentToken.substring(0,2).equals("ID") && env.hasVariable(currentToken))
         {
             String temp = currentToken;
             eat(currentToken);
-            return variables.get(temp);
+            returned = new Variable(temp);
         }
         eat(currentToken);
-        return 0;
+        return returned;
     }
 
     /**
@@ -160,25 +163,38 @@ public class Parser
      * @return the result of the term math
      * @throws ScanErrorException when an illegal character is scanned
      */
-    public int parseTerm() throws ScanErrorException
+    public Expression parseTerm() throws ScanErrorException
     {
-        int total = parseFactor();
+        Expression exp1 = null;
+        try
+        {
+            exp1 = parseFactor();
+        }
+        catch(Exception e)
+        {
+            return exp1;
+        }
+        System.out.println("parsing term");
+        Expression exp2 = null;
+        String op = "";
         while(true)
         {
             if(currentToken.equals("MATH : *"))
             {
                 eat(currentToken);
-                total *= parseFactor();
+                op = "*";
+                exp2 = parseFactor();
             }
             else if(currentToken.equals("MATH : /"))
             {
                 eat(currentToken);
-                total /= parseFactor();
+                op = "/";
+                exp2 = parseFactor();
             }
             else
                 break;
         }
-        return total;
+        return new BinOp(op, exp1, exp2);
     }
 
     /**
@@ -190,31 +206,36 @@ public class Parser
      */
     public Expression parseExpression() throws ScanErrorException
     {
-        Expression total = new Expression();
+        Expression exp1 = null;
+        Expression exp2 = null;
+        String op = "";
         try 
         {
-            total = parseTerm();
+            exp1 = parseTerm();
         } 
         catch (Exception e) 
         {
-            return total;
+            return exp1;
         }
+        System.out.println("parsing expression");
         while(true)
         {
             if(currentToken.equals("MATH : +"))
             {
                 eat(currentToken);
-                total += parseTerm();
+                op = "+";
+                exp2 = parseTerm();
             }
             else if(currentToken.equals("MATH : -"))
             {
                 eat(currentToken);
-                total -= parseTerm();
+                op = "-";
+                exp2 = parseTerm();
             }
             else
                 break;
         }
-        return total;
+        return new BinOp(op, exp1, exp2);
     }
 
     /**
@@ -222,19 +243,21 @@ public class Parser
      * @precondition the curent token is the start of multiple statements
      * @postcondition all the statements have been eaten
      */
-    public void parseStatements()
+    public Block parseStatements()
     {
+        ArrayList<Statement> returned = new ArrayList<Statement>();
         while(scanner.hasNext())
         {
             try 
             {
-                parseStatement();
+                returned.add(parseStatement());
             } 
             catch (Exception e) 
             {
                 break;
             }
         }
+        return new Block(returned);
     }
 
     /**
@@ -243,13 +266,14 @@ public class Parser
      * @postcondition all assignment tokens have been eaten
      * @throws ScanErrorException when an illegal character is scanned
      */
-    public void parseAssignment() throws ScanErrorException
+    public Assignment parseAssignment() throws ScanErrorException
     {
         String temp = currentToken;
         eat(currentToken);
         eat("EQ : :=");
-        variables.put(temp, parseExpression());
+        Expression exp = parseExpression();
         //System.out.println(variables);
         eat("SEP : ;");
+        return new Assignment(temp, exp);
     }
 }

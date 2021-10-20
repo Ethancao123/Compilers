@@ -6,6 +6,7 @@ public class Writeln extends Statement
 
     public Writeln(Expression exp)
     {
+        super();
         this.exp = exp;
     }
 }

@@ -1,9 +1,5 @@
 package ast;
 
-public class Expression 
+public abstract class Expression 
 {
-    public Expression()
-    {
-
-    }
 }
