@@ -1,4 +1,6 @@
+import java.lang.Thread.State;
 import java.util.*;
+import ast.*;
 
 /**
  * Parser for a Pascal Compiler
@@ -88,7 +90,7 @@ public class Parser
      * @postcondition statement token has been eaten
      * @throws ScanErrorException when an illegal character is scanned
      */
-    public void parseStatement() throws ScanErrorException
+    public Statement parseStatement() throws ScanErrorException
     {
         try 
         {
@@ -103,10 +105,10 @@ public class Parser
             {
                 eat("ID : WRITELN");
                 eat("SEP : (");
-                int returned = (parseExpression());
+                Expression exp = parseExpression();
                 eat("SEP : )");
                 eat("SEP : ;");
-                System.out.println(returned);
+                return new Writeln(exp);
             } 
             catch (Exception ee) 
             {
@@ -186,9 +188,9 @@ public class Parser
      * @return the result of the expression
      * @throws ScanErrorException when an illegal character is scanned
      */
-    public int parseExpression() throws ScanErrorException
+    public Expression parseExpression() throws ScanErrorException
     {
-        int total = 0;
+        Expression total = new Expression();
         try 
         {
             total = parseTerm();

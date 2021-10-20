@@ -1,8 +1,7 @@
 {
     "java.project.sourcePaths": [
         "parser/src",
-        "ScannerLab/scanner/src",
-        "JFlexLab/JFlexScanner/src",
-        "Scanner/scanner/src"
+        "Scanner/scanner/src",
+        "ast/src"
     ]
 }
