@@ -2,7 +2,13 @@ package ast;
 
 import java.util.*;
 
-public class Environment {
+/**
+ * Environment to handle variables for a Pascal compiler
+ * @author Ethan Cao
+ * @version 10/21/21
+ */
+public class Environment 
+{
 
     private Map<String, Integer> variables = new HashMap<String, Integer>();
 
@@ -16,13 +22,23 @@ public class Environment {
         variables.put(variable, value);
     }
 
+    /**
+     * Getter for variables in the Environment
+     * @param variable name of the variable to get from the environment
+     * @return the variable 
+     */
     public int getVariable(String variable)
     {
         return variables.get(variable);
     }
 
-    public boolean hasVariable(String variable)
+    /**
+     * Checks if a variable with a certain name has been declared previously
+     * @param var the variable name to be checked
+     * @return true if the variable exists; Otherwise, false
+     */
+    public boolean hasVariable(String var)
     {
-        return variables.get(variable) == null;
+        return variables.get(var) == null;
     }
 }

@@ -38,7 +38,7 @@ public class Parser
         {
             if(expected.equals(currentToken))
             {
-                System.out.println("eaten: " + currentToken);
+                //System.out.println("eaten: " + currentToken);
                 currentToken = scanner.nextToken();
                 while(currentToken.trim().isEmpty() && scanner.hasNext())
                 {
@@ -62,12 +62,19 @@ public class Parser
      *               after the IF statement 
      * @throws ScanErrorException when an illegal character is scanned
      */
-    private void parseIf() throws ScanErrorException
+    private Statement parseIf() throws ScanErrorException
     { 
         eat("ID : IF"); 
-        while(!currentToken.equals("SEP : ;"))
-            eat(currentToken);
-        eat("SEP : ;");
+        boolean result = parseCondition();
+        eat("ID : THEN");
+        if(result)
+        {
+            return parseStatement();
+        }
+        else
+        {
+            parseStatement(); //do nothing with the return to ignore
+        }
     }
 
     /**
@@ -89,10 +96,11 @@ public class Parser
      * @precondition current token is a statement
      * @postcondition statement token has been eaten
      * @throws ScanErrorException when an illegal character is scanned
+     * @return a Statement object
      */
     public Statement parseStatement() throws ScanErrorException
     {
-        Statement returned;
+        Statement returned = null;
         try 
         {
             eat("ID : BEGIN");
@@ -113,7 +121,16 @@ public class Parser
             } 
             catch (Exception ee) 
             {
-                returned = parseAssignment();
+                try 
+                {
+                    parseIf();
+                } 
+                catch (Exception eeee) 
+                {
+                    if(!currentToken.equals("ID : END"))
+                        returned = parseAssignment();
+                }
+                
             }
             
         } 
@@ -129,7 +146,7 @@ public class Parser
      */
     public Expression parseFactor() throws ScanErrorException
     {
-        System.out.println("parsing factor");
+        //System.out.println("parsing factor");
         Expression returned = null;
         if(currentToken.substring(0,3).equals("NUM"))
         {
@@ -146,13 +163,15 @@ public class Parser
             eat(currentToken);
             returned = new BinOp("*", parseFactor(), new Number(-1));
         }
-        else if(currentToken.substring(0,2).equals("ID") && env.hasVariable(currentToken))
+        else if(currentToken.substring(0,2).equals("ID") && env.hasVariable(currentToken) 
+                && !currentToken.equals("ID : END"))
         {
             String temp = currentToken;
             eat(currentToken);
             returned = new Variable(temp);
         }
-        eat(currentToken);
+        else
+            eat(currentToken);
         return returned;
     }
 
@@ -174,7 +193,7 @@ public class Parser
         {
             return exp1;
         }
-        System.out.println("parsing term");
+        //System.out.println("parsing term");
         Expression exp2 = null;
         String op = "";
         while(true)
@@ -206,18 +225,18 @@ public class Parser
      */
     public Expression parseExpression() throws ScanErrorException
     {
-        Expression exp1 = null;
+        Expression exp1 = parseTerm();
         Expression exp2 = null;
         String op = "";
-        try 
-        {
-            exp1 = parseTerm();
-        } 
-        catch (Exception e) 
-        {
-            return exp1;
-        }
-        System.out.println("parsing expression");
+        // try 
+        // {
+        //     exp1 = parseTerm();
+        // } 
+        // catch (Exception e) 
+        // {
+        //     return exp1;
+        // }
+        //System.out.println("parsing expression");
         while(true)
         {
             if(currentToken.equals("MATH : +"))
@@ -242,6 +261,7 @@ public class Parser
      * Parses multiple statements
      * @precondition the curent token is the start of multiple statements
      * @postcondition all the statements have been eaten
+     * @return a Block object
      */
     public Block parseStatements()
     {
@@ -265,15 +285,17 @@ public class Parser
      * @precondition the current token is the start of an assignment
      * @postcondition all assignment tokens have been eaten
      * @throws ScanErrorException when an illegal character is scanned
+     * @return an Assignment object
      */
     public Assignment parseAssignment() throws ScanErrorException
     {
         String temp = currentToken;
+        System.out.println("assigned var " + temp);
         eat(currentToken);
         eat("EQ : :=");
         Expression exp = parseExpression();
-        //System.out.println(variables);
         eat("SEP : ;");
+        //System.out.println(variables);
         return new Assignment(temp, exp);
     }
 }
