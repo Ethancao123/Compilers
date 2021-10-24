@@ -38,7 +38,7 @@ public class Parser
         {
             if(expected.equals(currentToken))
             {
-                //System.out.println("eaten: " + currentToken);
+                System.out.println("eaten: " + currentToken);
                 currentToken = scanner.nextToken();
                 while(currentToken.trim().isEmpty() && scanner.hasNext())
                 {
@@ -64,17 +64,40 @@ public class Parser
      */
     private Statement parseIf() throws ScanErrorException
     { 
+        System.out.println("parsing if");
         eat("ID : IF"); 
-        boolean result = parseCondition();
+        Condition c = parseCondition();
         eat("ID : THEN");
-        if(result)
-        {
-            return parseStatement();
-        }
-        else
-        {
-            parseStatement(); //do nothing with the return to ignore
-        }
+        System.out.println("parsed if");
+        return new If(parseStatement(), c);
+    }
+
+    /**
+     * Parses a conditional statement
+     * @precondition current token is an expression
+     * @postcondition all tokens in the conditional have been eaten
+     * @return the conditional statement
+     * @throws ScanErrorException when an illegal character is scanned
+     */
+    private Condition parseCondition() throws ScanErrorException
+    {
+        System.out.println("parsing condition");
+        Expression e1 = parseExpression();
+        String r = currentToken;
+        eat(currentToken);
+        Expression e2 = parseExpression();
+        System.out.println("parsed condition");
+        return new Condition(e1, r, e2);
+    }
+
+    private Statement parseWhile() throws ScanErrorException
+    {
+        System.out.println("parsing while");
+        eat("ID : WHILE"); 
+        Condition c = parseCondition();
+        eat("ID : DO");
+        System.out.println("parsed while");
+        return new While(parseStatement(), c);
     }
 
     /**
@@ -86,8 +109,10 @@ public class Parser
      */
     private Number parseNumber() throws ScanErrorException
     {
+        System.out.println("parsing number");
         int num = Integer.parseInt(currentToken.substring(6)); //removes prefix
         eat(currentToken);
+        System.out.println("parsed number " + num);
         return new Number(num);
     }
 
@@ -100,6 +125,7 @@ public class Parser
      */
     public Statement parseStatement() throws ScanErrorException
     {
+        System.out.println("parsing statement");
         Statement returned = null;
         try 
         {
@@ -125,10 +151,18 @@ public class Parser
                 {
                     parseIf();
                 } 
-                catch (Exception eeee) 
+                catch (Exception eee)
                 {
-                    if(!currentToken.equals("ID : END"))
-                        returned = parseAssignment();
+                    try 
+                    {
+                        parseWhile();
+                    } 
+                    catch (Exception eeee) 
+                    {
+                        if(!currentToken.equals("ID : END") && currentToken.substring(0,2).equals("ID"))
+                            returned = parseAssignment();
+                    }
+                        
                 }
                 
             }
@@ -146,6 +180,7 @@ public class Parser
      */
     public Expression parseFactor() throws ScanErrorException
     {
+        System.out.println("parsing factor");
         //System.out.println("parsing factor");
         Expression returned = null;
         if(currentToken.substring(0,3).equals("NUM"))
@@ -172,6 +207,7 @@ public class Parser
         }
         else
             eat(currentToken);
+        System.out.println("parsed factor");
         return returned;
     }
 
@@ -184,35 +220,42 @@ public class Parser
      */
     public Expression parseTerm() throws ScanErrorException
     {
-        Expression exp1 = null;
+        System.out.println("parsing term");
+        Expression exp1 = parseFactor();
+        Expression exp2 = null;
+        String op = "";
         try
         {
-            exp1 = parseFactor();
+            exp2 = null;
+            op = "";
+            while(true)
+            {
+                if(currentToken.equals("MATH : *"))
+                {
+                    eat(currentToken);
+                    op = "*";
+                    exp2 = parseFactor();
+                }
+                else if(currentToken.equals("MATH : /"))
+                {
+                    eat(currentToken);
+                    op = "/";
+                    exp2 = parseFactor();
+                }
+                else
+                    break;
+            }
         }
         catch(Exception e)
         {
+            
+        }
+        if(op.equals(""))
+        {
+            System.out.println("parsed term");
             return exp1;
         }
-        //System.out.println("parsing term");
-        Expression exp2 = null;
-        String op = "";
-        while(true)
-        {
-            if(currentToken.equals("MATH : *"))
-            {
-                eat(currentToken);
-                op = "*";
-                exp2 = parseFactor();
-            }
-            else if(currentToken.equals("MATH : /"))
-            {
-                eat(currentToken);
-                op = "/";
-                exp2 = parseFactor();
-            }
-            else
-                break;
-        }
+        System.out.println("parsed binop with " + op);
         return new BinOp(op, exp1, exp2);
     }
 
@@ -225,35 +268,40 @@ public class Parser
      */
     public Expression parseExpression() throws ScanErrorException
     {
+        System.out.println("parsing expression");
         Expression exp1 = parseTerm();
         Expression exp2 = null;
         String op = "";
-        // try 
-        // {
-        //     exp1 = parseTerm();
-        // } 
-        // catch (Exception e) 
-        // {
-        //     return exp1;
-        // }
-        //System.out.println("parsing expression");
-        while(true)
+        try 
         {
-            if(currentToken.equals("MATH : +"))
+            while(true)
             {
-                eat(currentToken);
-                op = "+";
-                exp2 = parseTerm();
-            }
-            else if(currentToken.equals("MATH : -"))
-            {
-                eat(currentToken);
-                op = "-";
-                exp2 = parseTerm();
-            }
-            else
-                break;
+                if(currentToken.equals("MATH : +"))
+                {
+                    eat(currentToken);
+                    op = "+";
+                    exp2 = parseTerm();
+                }
+                else if(currentToken.equals("MATH : -"))
+                {
+                    eat(currentToken);
+                    op = "-";
+                    exp2 = parseTerm();
+                }
+                else
+                    break;
+            } 
         }
+        catch (Exception e) 
+        {
+            
+        }
+        if(op.equals(""))
+        {
+            System.out.println("parsed expression");
+            return exp1;
+        }
+        System.out.println("parsed binop with " + op);
         return new BinOp(op, exp1, exp2);
     }
 
@@ -265,8 +313,9 @@ public class Parser
      */
     public Block parseStatements()
     {
+        System.out.println("parsing block");
         ArrayList<Statement> returned = new ArrayList<Statement>();
-        while(scanner.hasNext())
+        while(scanner.hasNext()) 
         {
             try 
             {
@@ -277,6 +326,7 @@ public class Parser
                 break;
             }
         }
+        System.out.println("Parsed Block");
         return new Block(returned);
     }
 
@@ -289,13 +339,13 @@ public class Parser
      */
     public Assignment parseAssignment() throws ScanErrorException
     {
+        System.out.println("parsing assignment");
         String temp = currentToken;
         System.out.println("assigned var " + temp);
         eat(currentToken);
         eat("EQ : :=");
         Expression exp = parseExpression();
         eat("SEP : ;");
-        //System.out.println(variables);
         return new Assignment(temp, exp);
     }
 }

@@ -11,4 +11,27 @@ public class Condition {
         exp1 = e1;
         exp2 = e2;
     }
+
+    public boolean eval(Environment env)
+    {
+        int result1 = exp1.eval(env);
+        int result2 = exp2.eval(env);
+        switch(relop)
+        {
+            case "=":
+                return result1 == result2;
+            case "<>":
+                return result1 != result2;
+            case "<":
+                return result1 < result2;
+            case ">":
+                return result1 > result2;
+            case "<=":
+                return result1 <= result2;
+            case ">=":
+                return result1 >= result2;
+            default:
+                throw new IllegalArgumentException(relop + " is not an relative operator");
+        }
+    }
 }

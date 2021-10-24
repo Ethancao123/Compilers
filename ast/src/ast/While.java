@@ -1,10 +1,11 @@
 package ast;
 
-public class If extends Statement{
-    private Statement stmt;
-    private Condition cond;
-    
-    public If(Statement s, Condition c)
+public class While extends Statement
+{
+    Statement stmt;
+    Condition cond;
+
+    public While(Statement s, Condition c)
     {
         stmt = s;
         cond = c;
@@ -12,7 +13,7 @@ public class If extends Statement{
 
     public void exec(Environment env)
     {
-        if(cond.eval(env))
+        while(cond.eval(env))
         {
             stmt.exec(env);
         }
