@@ -11,6 +11,7 @@ public class Environment
 {
 
     private Map<String, Integer> variables = new HashMap<String, Integer>();
+    private Map<String, Statement> procedures = new HashMap<String, Statement>();
 
     /**
      * Associates the given variable name with the given value
@@ -40,5 +41,20 @@ public class Environment
     public boolean hasVariable(String var)
     {
         return variables.get(var) == null;
+    }
+
+    public void setProcedure(String name, Statement stmts)
+    {
+        procedures.put(name, stmts);
+    }
+
+    public Statement getProcedure(String name)
+    {
+        return procedures.get(name);
+    }
+
+    public boolean hasProcedure(String name)
+    {
+        return procedures.get(name) == null;
     }
 }

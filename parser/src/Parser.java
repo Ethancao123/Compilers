@@ -26,6 +26,23 @@ public class Parser
         currentToken = scanner.nextToken();
     }
 
+    public Program parseProgram() throws ScanErrorException
+    {
+        Environment env = new Environment();
+        while(currentToken.equals("ID : PROCEDURE"))
+        {
+            eat("ID : PROCEDURE");
+            String id = currentToken;
+            eat(currentToken);
+            eat("SEP : (");
+            eat("SEP : )");
+            eat("SEP : ;");
+            Statement stmts = parseStatement();
+            env.setProcedure(id, stmts);
+        }
+        return new Program(env, parseStatement());
+    }
+
     /**
      * Checks if the expected next String is the same as the actual next String 
      * and consumes one token if they are equal

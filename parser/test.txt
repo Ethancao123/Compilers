@@ -1,1 +1,8 @@
-BEGIN count := 50; WHILE count > 0 DO BEGIN WRITELN(count); count := count-1; END; END; .
+PROCEDURE add3();
+count := count + 3;
+BEGIN
+count := 2;
+ignore := add3();
+WRITELN(count);
+END;
+.
