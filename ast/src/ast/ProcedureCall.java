@@ -1,6 +1,6 @@
 package ast;
 
-public class ProcedureCall extends Statement
+public class ProcedureCall extends Expression
 {
     public String name;
 
@@ -9,8 +9,9 @@ public class ProcedureCall extends Statement
         name = n;
     }
 
-    public void exec(Environment env)
+    public int eval(Environment env)
     {
         env.getProcedure(name).exec(env);
+        return 0;
     }
 }

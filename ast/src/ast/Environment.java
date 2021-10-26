@@ -40,7 +40,7 @@ public class Environment
      */
     public boolean hasVariable(String var)
     {
-        return variables.get(var) == null;
+        return variables.get(var) != null;
     }
 
     public void setProcedure(String name, Statement stmts)
@@ -55,6 +55,6 @@ public class Environment
 
     public boolean hasProcedure(String name)
     {
-        return procedures.get(name) == null;
+        return procedures.get(name) != null;
     }
 }

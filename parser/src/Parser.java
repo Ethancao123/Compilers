@@ -28,7 +28,6 @@ public class Parser
 
     public Program parseProgram() throws ScanErrorException
     {
-        Environment env = new Environment();
         while(currentToken.equals("ID : PROCEDURE"))
         {
             eat("ID : PROCEDURE");
@@ -40,6 +39,7 @@ public class Parser
             Statement stmts = parseStatement();
             env.setProcedure(id, stmts);
         }
+        System.out.println(env);
         return new Program(env, parseStatement());
     }
 
@@ -211,6 +211,15 @@ public class Parser
             eat(currentToken);
             returned = new Variable(temp);
         }
+        else if(currentToken.substring(0,2).equals("ID") && env.hasProcedure(currentToken) 
+                && !currentToken.equals("ID : END"))
+        {
+            String temp = currentToken;
+            eat(currentToken);
+            returned = new ProcedureCall(temp);
+            eat("SEP : (");
+            eat("SEP : )");
+        }
         else
             eat(currentToken);
         System.out.println("parsed factor");
@@ -306,6 +315,8 @@ public class Parser
     public Assignment parseAssignment() throws ScanErrorException
     {
         System.out.println("parsing assignment");
+        if(env.hasProcedure(currentToken) || env.hasVariable(currentToken))
+            throw new ScanErrorException(currentToken + " Already exists");
         String temp = currentToken;
         System.out.println("assigned var " + temp);
         eat(currentToken);
