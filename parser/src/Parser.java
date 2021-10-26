@@ -1,4 +1,5 @@
 import java.util.*;
+
 import ast.*;
 import ast.Number;
 
@@ -64,7 +65,7 @@ public class Parser
      */
     private Statement parseIf() throws ScanErrorException
     { 
-        System.out.println("parsing if");
+        //System.out.println("parsing if");
         eat("ID : IF"); 
         Condition c = parseCondition();
         eat("ID : THEN");
@@ -81,7 +82,7 @@ public class Parser
      */
     private Condition parseCondition() throws ScanErrorException
     {
-        System.out.println("parsing condition");
+        //System.out.println("parsing condition");
         Expression e1 = parseExpression();
         String r = currentToken;
         eat(currentToken);
@@ -90,9 +91,14 @@ public class Parser
         return new Condition(e1, r, e2);
     }
 
+    /**
+     * Parses a while statement
+     * @return a while object with the statement
+     * @throws ScanErrorException if an illegal character is scanned
+     */
     private Statement parseWhile() throws ScanErrorException
     {
-        System.out.println("parsing while");
+        //System.out.println("parsing while");
         eat("ID : WHILE"); 
         Condition c = parseCondition();
         eat("ID : DO");
@@ -125,49 +131,32 @@ public class Parser
      */
     public Statement parseStatement() throws ScanErrorException
     {
-        System.out.println("parsing statement");
+        //System.out.println("parsing statement");
         Statement returned = null;
-        try 
+        if(currentToken.equals("ID : BEGIN"))
         {
             eat("ID : BEGIN");
             returned = parseStatements();
             eat("ID : END");
             eat("SEP : ;");
         } 
-        catch (Exception e) 
+        else if (currentToken.equals("ID : WRITELN"))
         {
-            try 
-            {
-                eat("ID : WRITELN");
-                eat("SEP : (");
-                Expression exp = parseExpression();
-                eat("SEP : )");
-                eat("SEP : ;");
-                returned = new Writeln(exp);
-            } 
-            catch (Exception ee) 
-            {
-                try 
-                {
-                    parseIf();
-                } 
-                catch (Exception eee)
-                {
-                    try 
-                    {
-                        parseWhile();
-                    } 
-                    catch (Exception eeee) 
-                    {
-                        if(!currentToken.equals("ID : END") && currentToken.substring(0,2).equals("ID"))
-                            returned = parseAssignment();
-                    }
-                        
-                }
-                
-            }
-            
-        } 
+            eat("ID : WRITELN");
+            eat("SEP : (");
+            Expression exp = parseExpression();
+            eat("SEP : )");
+            eat("SEP : ;");
+            returned = new Writeln(exp);
+        }
+        else if(currentToken.equals("ID : IF"))
+            returned = parseIf();
+        else if(currentToken.equals("ID : WHILE"))
+            returned = parseWhile();
+        else if(!currentToken.equals("ID : END") && currentToken.substring(0,2).equals("ID"))
+            returned = parseAssignment();
+        else
+            throw new ScanErrorException("Invalid statement parse");
         return returned;
     }
 
@@ -222,41 +211,20 @@ public class Parser
     {
         System.out.println("parsing term");
         Expression exp1 = parseFactor();
-        Expression exp2 = null;
-        String op = "";
-        try
+        while(currentToken.equals("MATH : *") || currentToken.equals("MATH : /"))
         {
-            exp2 = null;
-            op = "";
-            while(true)
+            if(currentToken.equals("MATH : *"))
             {
-                if(currentToken.equals("MATH : *"))
-                {
-                    eat(currentToken);
-                    op = "*";
-                    exp2 = parseFactor();
-                }
-                else if(currentToken.equals("MATH : /"))
-                {
-                    eat(currentToken);
-                    op = "/";
-                    exp2 = parseFactor();
-                }
-                else
-                    break;
+                eat("MATH : *");
+                exp1 = new BinOp("*", exp1, parseFactor());
+            }
+            else if(currentToken.equals("MATH : /"))
+            {
+                eat("MATH : /");
+                exp1 = new BinOp("/", exp1, parseFactor());
             }
         }
-        catch(Exception e)
-        {
-            
-        }
-        if(op.equals(""))
-        {
-            System.out.println("parsed term");
-            return exp1;
-        }
-        System.out.println("parsed binop with " + op);
-        return new BinOp(op, exp1, exp2);
+        return exp1;
     }
 
     /**
@@ -270,39 +238,20 @@ public class Parser
     {
         System.out.println("parsing expression");
         Expression exp1 = parseTerm();
-        Expression exp2 = null;
-        String op = "";
-        try 
+        while(currentToken.equals("MATH : +") || currentToken.equals("MATH : -"))
         {
-            while(true)
+            if(currentToken.equals("MATH : +"))
             {
-                if(currentToken.equals("MATH : +"))
-                {
-                    eat(currentToken);
-                    op = "+";
-                    exp2 = parseTerm();
-                }
-                else if(currentToken.equals("MATH : -"))
-                {
-                    eat(currentToken);
-                    op = "-";
-                    exp2 = parseTerm();
-                }
-                else
-                    break;
-            } 
+                eat("MATH : +");
+                exp1 = new BinOp("+", exp1, parseTerm());
+            }
+            else if(currentToken.equals("MATH : -"))
+            {
+                eat("MATH : -");
+                exp1 = new BinOp("-", exp1, parseTerm());
+            }
         }
-        catch (Exception e) 
-        {
-            
-        }
-        if(op.equals(""))
-        {
-            System.out.println("parsed expression");
-            return exp1;
-        }
-        System.out.println("parsed binop with " + op);
-        return new BinOp(op, exp1, exp2);
+        return exp1;
     }
 
     /**

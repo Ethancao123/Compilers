@@ -1,3 +1,1 @@
-BEGIN count := 5; IF count > 0 THEN BEGIN WRITELN(count); count := count – 1; END; END; .
-
-Note to self: The "- 1" of "count - 1" is not being parsed
+BEGIN count := 50; WHILE count > 0 DO BEGIN WRITELN(count); count := count-1; END; END; .

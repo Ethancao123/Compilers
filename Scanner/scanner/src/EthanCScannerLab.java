@@ -60,8 +60,8 @@ public class EthanCScannerLab
         letter = Pattern.compile("[a-zA-Z]");
         digit = Pattern.compile("[0-9]");
         seperator = Pattern.compile("['|'|'('|')'|'{'|'}'|'['|']'|'<'|'>'|'\\'|'.'|';']");
-        operand = Pattern.compile("['>' '<' '+' '-' '*' '/' '!']");
-        equalsPrefix = Pattern.compile("['>' '<' ':' '+' '-' '*' '/']");
+        operand = Pattern.compile("['>' '<' '+' '*' '/' '!']");
+        equalsPrefix = Pattern.compile("['>' '<' ':' '+' '*' '/']");
         //space = Pattern.compile("['' ' ' '\t' '\r' '\n' '\\s']");
         space = Pattern.compile("[\\s]");
         equals = Pattern.compile("['=']");
@@ -103,8 +103,8 @@ public class EthanCScannerLab
      */
     private void eat(char expected) throws ScanErrorException
     {
-        if(eof)
-            throw new ScanErrorException("End of file has been reached");
+        //if(eof)
+            //throw new ScanErrorException("End of file has been reached");
         if(currentChar == expected)
         {
             getNextChar();
@@ -132,6 +132,11 @@ public class EthanCScannerLab
      */
     public String nextToken() throws ScanErrorException
     {
+        if(isWhitespace(currentChar))
+        {
+            while(hasNext() && isWhitespace(currentChar))
+                eat(currentChar);
+        }
         if(currentChar == '-')
         {
             eat(currentChar);
@@ -175,12 +180,9 @@ public class EthanCScannerLab
             prefix = "ID";
             lexeme += currentChar;
             eat(currentChar);
-            while(hasNext() && !isWhitespace(currentChar) && !isSeperator(currentChar))
+            while(hasNext() && (isDigit(currentChar) || isLetter(currentChar)))
             {
-                if(isDigit(currentChar) || isLetter(currentChar))
-                    lexeme += currentChar;
-                else
-                    throw new ScanErrorException("expected a identifier found " + currentChar);
+                lexeme += currentChar;
                 eat(currentChar);
             }
         }
@@ -197,16 +199,8 @@ public class EthanCScannerLab
                 prefix = "EQ";
                 eat(currentChar);
             }
-            //else if(!isOperand(lexeme.charAt(0)))
-            //    throw new ScanErrorException("expected an equals sign found " + currentChar);
-            else if(isEquals(currentChar))
-            {
-                lexeme += currentChar;
-                prefix = "EQ";
-                eat(currentChar);
-            }
             //is a seperator
-            else if(isSeperator(currentChar))
+            else if(isSeperator(lexeme.charAt(0)))
             {
                 lexeme += currentChar;
                 prefix = "SEP";
@@ -214,13 +208,8 @@ public class EthanCScannerLab
             }
         }
             //is a whitespace
-        else
-        {
-            eat(currentChar);
+        else if(lexeme.equals(" "))
             return "";
-        }
-        if(lexeme.equals(" "))
-                return "";
         lexeme = lexeme.strip();
         return "" + prefix + " : " + lexeme;
         

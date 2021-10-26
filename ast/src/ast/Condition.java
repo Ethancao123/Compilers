@@ -35,17 +35,17 @@ public class Condition
         int result2 = exp2.eval(env);
         switch(relop)
         {
-            case "=":
+            case "SEP : =":
                 return result1 == result2;
-            case "<>":
+            case "SEP : <>":
                 return result1 != result2;
-            case "<":
+            case "SEP : <":
                 return result1 < result2;
-            case ">":
+            case "SEP : >":
                 return result1 > result2;
-            case "<=":
+            case "SEP : <=":
                 return result1 <= result2;
-            case ">=":
+            case "SEP : >=":
                 return result1 >= result2;
             default:
                 throw new IllegalArgumentException(relop + " is not an relative operator");
