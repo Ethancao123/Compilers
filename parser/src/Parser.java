@@ -29,7 +29,7 @@ public class Parser
     /**
      * Parses a Pascal program
      * @return the parsed program
-     * @throws ScanErrorException if an illegal character is scanned    
+     * @throws ScanErrorException if an illegal character is scanned
      */
     public Program parseProgram() throws ScanErrorException
     {

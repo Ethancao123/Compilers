@@ -43,16 +43,31 @@ public class Environment
         return variables.get(var) != null;
     }
 
+    /**
+     * Adds a procedure to the environment
+     * @param name the name of the procedure
+     * @param stmts the statements within the procedure
+     */
     public void setProcedure(String name, Statement stmts)
     {
         procedures.put(name, stmts);
     }
 
+    /**
+     * Gets a procedure from the environment
+     * @param name the name of the procedure
+     * @return the procedure with name
+     */
     public Statement getProcedure(String name)
     {
         return procedures.get(name);
     }
 
+    /**
+     * Checks if a procedure exists within the environment
+     * @param name The name of the procedure
+     * @return True if the procedure has been declared; Otherwise, false
+     */
     public boolean hasProcedure(String name)
     {
         return procedures.get(name) != null;
