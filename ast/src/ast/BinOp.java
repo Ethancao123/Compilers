@@ -31,6 +31,9 @@ public class BinOp extends Expression
      */
     public int eval(Environment env)
     {
+        System.out.println(exp1);
+        System.out.println(exp2);
+        System.out.println(op);
         int result1 = exp1.eval(env);
         int result2 = exp2.eval(env);
         switch(op)

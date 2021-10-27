@@ -26,6 +26,11 @@ public class Parser
         currentToken = scanner.nextToken();
     }
 
+    /**
+     * Parses a Pascal program
+     * @return the parsed program
+     * @throws ScanErrorException if an illegal character is scanned    
+     */
     public Program parseProgram() throws ScanErrorException
     {
         while(currentToken.equals("ID : PROCEDURE"))
