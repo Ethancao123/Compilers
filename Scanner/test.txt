@@ -1,14 +1,8 @@
-VAR x;
-PROCEDURE square(n);
+PROCEDURE add3();
+count := count + 3;
 BEGIN
-RETURN n * n;
-END;
-BEGIN
-x := 1;
-WHILE x <= 10 DO
-BEGIN
-WRITELN(square(x));
-x := x + 1;
-END;
+count := 2;
+ignore := add3();
+WRITELN(count);
 END;
 .

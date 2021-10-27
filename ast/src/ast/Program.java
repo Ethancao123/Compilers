@@ -19,6 +19,7 @@ public class Program
     {
         env = e;
         stmts = s;
+        env.printProcedures();
     }
 
     /**
@@ -27,5 +28,6 @@ public class Program
     public void exec()
     {
         stmts.exec(env);
+        env.printVariables();
     }
 }

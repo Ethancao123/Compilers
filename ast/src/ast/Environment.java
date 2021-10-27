@@ -72,4 +72,26 @@ public class Environment
     {
         return procedures.get(name) != null;
     }
+
+    public void printVariables()
+    {
+        for (String name: variables.keySet()) 
+        {
+            String key = name;
+            String value = variables.get(name).toString();
+            System.out.println("variables : ");
+            System.out.println(key + " " + value);
+        }
+    }
+
+    public void printProcedures()
+    {
+        for (String name: procedures.keySet()) 
+        {
+            String key = name;
+            String value = procedures.get(name).toString();
+            System.out.println("procedures : ");
+            System.out.println(key + " " + value);
+        }
+    }
 }

@@ -44,7 +44,7 @@ public class Parser
             Statement stmts = parseStatement();
             env.setProcedure(id, stmts);
         }
-        System.out.println(env);
+        System.out.println();
         return new Program(env, parseStatement());
     }
 
@@ -209,12 +209,17 @@ public class Parser
             eat(currentToken);
             returned = new BinOp("*", parseFactor(), new Number(-1));
         }
-        else if(currentToken.substring(0,2).equals("ID") && env.hasVariable(currentToken) 
+        else if(currentToken.substring(0,2).equals("ID") && !env.hasVariable(currentToken) 
                 && !currentToken.equals("ID : END"))
         {
             String temp = currentToken;
             eat(currentToken);
             returned = new Variable(temp);
+        }
+        else if(currentToken.substring(0,2).equals("ID") && env.hasVariable(currentToken) 
+        && !currentToken.equals("ID : END"))
+        {
+            return new Number(env.getVariable(currentToken));
         }
         else if(currentToken.substring(0,2).equals("ID") && env.hasProcedure(currentToken) 
                 && !currentToken.equals("ID : END"))
