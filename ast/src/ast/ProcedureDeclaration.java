@@ -9,6 +9,7 @@ public class ProcedureDeclaration extends Statement
 {
     private String name;
     private Statement stmts;
+    private String[] args;
 
     /**
      * Constructor for objects of the ProcedureDeclaration class
@@ -22,6 +23,19 @@ public class ProcedureDeclaration extends Statement
     }
 
     /**
+     * Constructor for objects of the ProcedureDeclaration class
+     * @param n the name of the procedure
+     * @param s the statements within the procedure
+     * @param a arguments of the procedure
+     */
+    public ProcedureDeclaration(String n, Statement s, String[] a)
+    {
+        name = n;
+        stmts = s;
+        args = a;
+    }
+
+    /**
      * Executes the procedure declaration
      * @param env the environemnt to execute the declaration in
      */
@@ -29,4 +43,5 @@ public class ProcedureDeclaration extends Statement
     {
         env.setProcedure(name,stmts);
     }
+    //TODO: add stuff for args
 }

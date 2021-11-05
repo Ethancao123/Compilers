@@ -8,6 +8,7 @@ package ast;
 public class ProcedureCall extends Expression
 {
     private String name;
+    private int[] args;
     /**
      * Constructor for objects of the ProcedureCall class
      * @param n the name of the procedure that is called
@@ -15,6 +16,17 @@ public class ProcedureCall extends Expression
     public ProcedureCall(String n)
     {
         name = n;
+    }
+
+    /**
+     * Constructor for objects of the ProcedureCall class
+     * @param n the name of the procedure that is called
+     * @param a the arguments of the procedure call
+     */
+    public ProcedureCall(String n, int[] a)
+    {
+        name = n;
+        args = a;
     }
 
     /**

@@ -54,6 +54,23 @@ public class Environment
     }
 
     /**
+     * Adds a procedure to the environment
+     * @param name the name of the procedure
+     * @param stmts the statements within the procedure
+     * @param args arguments of the procedure
+     */
+    public void setProcedure(String name, Statement stmts, String[] args)
+    {
+        String fullName = name;
+        for(String s : args)
+        {
+            name += "$";
+            name += s;
+        }
+        procedures.put(fullName, stmts);
+    }
+
+    /**
      * Gets a procedure from the environment
      * @param name the name of the procedure
      * @return the procedure with name
@@ -71,27 +88,5 @@ public class Environment
     public boolean hasProcedure(String name)
     {
         return procedures.get(name) != null;
-    }
-
-    public void printVariables()
-    {
-        for (String name: variables.keySet()) 
-        {
-            String key = name;
-            String value = variables.get(name).toString();
-            System.out.println("variables : ");
-            System.out.println(key + " " + value);
-        }
-    }
-
-    public void printProcedures()
-    {
-        for (String name: procedures.keySet()) 
-        {
-            String key = name;
-            String value = procedures.get(name).toString();
-            System.out.println("procedures : ");
-            System.out.println(key + " " + value);
-        }
     }
 }
