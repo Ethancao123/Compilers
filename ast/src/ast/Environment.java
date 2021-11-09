@@ -11,7 +11,26 @@ public class Environment
 {
 
     private Map<String, Integer> variables = new HashMap<String, Integer>();
-    private Map<String, Statement> procedures = new HashMap<String, Statement>();
+    private Map<String, ProcedureDeclaration> procedures 
+            = new HashMap<String, ProcedureDeclaration>();
+    private Environment parent;
+
+    /**
+     * Default constructor for Objects of the Environment class
+     */
+    public Environment()
+    {
+        parent = null;
+    }
+
+    /**
+     * Constructor for Objects of the Environment class
+     * @param parent the parent environment
+     */
+    public Environment(Environment parent)
+    {
+        this.parent = parent;
+    }
 
     /**
      * Associates the given variable name with the given value
@@ -20,7 +39,14 @@ public class Environment
      */
     public void setVariable(String variable, int value)
     {
-        variables.put(variable, value);
+        if(parent.hasVariable(variable))
+        {
+            parent.setVariable(variable, value);
+        }
+        else
+        {            
+            variables.put(variable, value);
+        }
     }
 
     /**
@@ -30,7 +56,9 @@ public class Environment
      */
     public int getVariable(String variable)
     {
-        return variables.get(variable);
+        if(variables.get(variable) != null)
+            return variables.get(variable);
+        return parent.getVariable(variable);
     }
 
     /**
@@ -40,34 +68,24 @@ public class Environment
      */
     public boolean hasVariable(String var)
     {
-        return variables.get(var) != null;
+        return variables.get(var) != null || parent.hasVariable(var);
     }
 
     /**
      * Adds a procedure to the environment
      * @param name the name of the procedure
-     * @param stmts the statements within the procedure
+     * @param stmts the ProcedureDeclarations within the procedure
      */
-    public void setProcedure(String name, Statement stmts)
+    public void setProcedure(String name, ProcedureDeclaration stmts)
     {
-        procedures.put(name, stmts);
-    }
-
-    /**
-     * Adds a procedure to the environment
-     * @param name the name of the procedure
-     * @param stmts the statements within the procedure
-     * @param args arguments of the procedure
-     */
-    public void setProcedure(String name, Statement stmts, String[] args)
-    {
-        String fullName = name;
-        for(String s : args)
+        if(parent == null)
         {
-            name += "$";
-            name += s;
+            procedures.put(name, stmts);
         }
-        procedures.put(fullName, stmts);
+        else
+        {
+            parent.setProcedure(name, stmts);
+        }
     }
 
     /**
@@ -75,9 +93,13 @@ public class Environment
      * @param name the name of the procedure
      * @return the procedure with name
      */
-    public Statement getProcedure(String name)
+    public ProcedureDeclaration getProcedure(String name)
     {
-        return procedures.get(name);
+        if(parent == null)
+        {
+            return procedures.get(name);
+        }
+        return parent.getProcedure(name);
     }
 
     /**
@@ -87,6 +109,10 @@ public class Environment
      */
     public boolean hasProcedure(String name)
     {
-        return procedures.get(name) != null;
+        if(parent == null)
+        {
+            return procedures.get(name) != null;
+        }
+        return parent.hasProcedure(name);
     }
 }

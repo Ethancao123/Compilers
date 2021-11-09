@@ -1,4 +1,5 @@
 package ast;
+import java.util.*;
 
 /**
  * Class for procedure declarations in a Pascal compiler
@@ -9,7 +10,7 @@ public class ProcedureDeclaration extends Statement
 {
     private String name;
     private Statement stmts;
-    private String[] args;
+    private List<String> args;
 
     /**
      * Constructor for objects of the ProcedureDeclaration class
@@ -28,7 +29,7 @@ public class ProcedureDeclaration extends Statement
      * @param s the statements within the procedure
      * @param a arguments of the procedure
      */
-    public ProcedureDeclaration(String n, Statement s, String[] a)
+    public ProcedureDeclaration(String n, Statement s, List<String> a)
     {
         name = n;
         stmts = s;
@@ -41,7 +42,11 @@ public class ProcedureDeclaration extends Statement
      */
     public void exec(Environment env)
     {
-        env.setProcedure(name,stmts);
+        env.setProcedure(name,this);
     }
-    //TODO: add stuff for args
+
+    public void run(Environment env, List<Integer> args)
+    {
+        
+    }
 }

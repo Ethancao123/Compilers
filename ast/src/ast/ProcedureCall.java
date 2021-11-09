@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.*;
+
 /**
  * Class for procedure calls in a Pascal compiler
  * @author Ethan Cao
@@ -8,7 +10,7 @@ package ast;
 public class ProcedureCall extends Expression
 {
     private String name;
-    private int[] args;
+    private List<Integer> args;
     /**
      * Constructor for objects of the ProcedureCall class
      * @param n the name of the procedure that is called
@@ -23,7 +25,7 @@ public class ProcedureCall extends Expression
      * @param n the name of the procedure that is called
      * @param a the arguments of the procedure call
      */
-    public ProcedureCall(String n, int[] a)
+    public ProcedureCall(String n, List<Integer> a)
     {
         name = n;
         args = a;
@@ -36,7 +38,7 @@ public class ProcedureCall extends Expression
      */
     public int eval(Environment env)
     {
-        env.getProcedure(name).exec(env);
+        env.getProcedure(name).run(new Environment(env), args);
         return 0;
     }
 }
