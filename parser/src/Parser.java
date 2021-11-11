@@ -39,12 +39,16 @@ public class Parser
             String id = currentToken;
             eat(currentToken);
             eat("SEP : (");
+            while(!currentToken.equals("SEP : )"))
+            {
+                //test for arguments and consume them
+            }
             eat("SEP : )");
             eat("SEP : ;");
             Statement stmts = parseStatement();
-            env.setProcedure(id, stmts);
+            env.setProcedure(id, new ProcedureDeclaration(id,stmts));
         }
-        System.out.println();
+        //System.out.println();
         return new Program(env, parseStatement());
     }
 
@@ -61,11 +65,11 @@ public class Parser
         {
             if(expected.equals(currentToken))
             {
-                System.out.println("eaten: " + currentToken);
+                //System.out.println("eaten: " + currentToken);
                 currentToken = scanner.nextToken();
                 while(currentToken.trim().isEmpty() && scanner.hasNext())
                 {
-                    //System.out.println("eaten: " + currentToken);
+                    ////System.out.println("eaten: " + currentToken);
                     currentToken = scanner.nextToken();
                 }
             }
@@ -87,11 +91,11 @@ public class Parser
      */
     private Statement parseIf() throws ScanErrorException
     { 
-        //System.out.println("parsing if");
+        ////System.out.println("parsing if");
         eat("ID : IF"); 
         Condition c = parseCondition();
         eat("ID : THEN");
-        System.out.println("parsed if");
+        //System.out.println("parsed if");
         return new If(parseStatement(), c);
     }
 
@@ -104,12 +108,12 @@ public class Parser
      */
     private Condition parseCondition() throws ScanErrorException
     {
-        //System.out.println("parsing condition");
+        ////System.out.println("parsing condition");
         Expression e1 = parseExpression();
         String r = currentToken;
         eat(currentToken);
         Expression e2 = parseExpression();
-        System.out.println("parsed condition");
+        //System.out.println("parsed condition");
         return new Condition(e1, r, e2);
     }
 
@@ -120,11 +124,11 @@ public class Parser
      */
     private Statement parseWhile() throws ScanErrorException
     {
-        //System.out.println("parsing while");
+        ////System.out.println("parsing while");
         eat("ID : WHILE"); 
         Condition c = parseCondition();
         eat("ID : DO");
-        System.out.println("parsed while");
+        //System.out.println("parsed while");
         return new While(parseStatement(), c);
     }
 
@@ -137,10 +141,10 @@ public class Parser
      */
     private Number parseNumber() throws ScanErrorException
     {
-        System.out.println("parsing number");
+        //System.out.println("parsing number");
         int num = Integer.parseInt(currentToken.substring(6)); //removes prefix
         eat(currentToken);
-        System.out.println("parsed number " + num);
+        //System.out.println("parsed number " + num);
         return new Number(num);
     }
 
@@ -153,7 +157,7 @@ public class Parser
      */
     public Statement parseStatement() throws ScanErrorException
     {
-        //System.out.println("parsing statement");
+        ////System.out.println("parsing statement");
         Statement returned = null;
         if(currentToken.equals("ID : BEGIN"))
         {
@@ -191,8 +195,8 @@ public class Parser
      */
     public Expression parseFactor() throws ScanErrorException
     {
-        System.out.println("parsing factor");
         //System.out.println("parsing factor");
+        ////System.out.println("parsing factor");
         Expression returned = null;
         if(currentToken.substring(0,3).equals("NUM"))
         {
@@ -210,14 +214,14 @@ public class Parser
             returned = new BinOp("*", parseFactor(), new Number(-1));
         }
         else if(currentToken.substring(0,2).equals("ID") && !env.hasVariable(currentToken) 
-                && !currentToken.equals("ID : END"))
+                && !currentToken.equals("ID : END") && !env.hasProcedure(currentToken))
         {
             String temp = currentToken;
             eat(currentToken);
             returned = new Variable(temp);
         }
         else if(currentToken.substring(0,2).equals("ID") && env.hasVariable(currentToken) 
-        && !currentToken.equals("ID : END"))
+                && !currentToken.equals("ID : END"))
         {
             return new Number(env.getVariable(currentToken));
         }
@@ -232,7 +236,7 @@ public class Parser
         }
         else
             eat(currentToken);
-        System.out.println("parsed factor");
+        //System.out.println("parsed factor");
         return returned;
     }
 
@@ -245,7 +249,7 @@ public class Parser
      */
     public Expression parseTerm() throws ScanErrorException
     {
-        System.out.println("parsing term");
+        //System.out.println("parsing term");
         Expression exp1 = parseFactor();
         while(currentToken.equals("MATH : *") || currentToken.equals("MATH : /"))
         {
@@ -272,7 +276,7 @@ public class Parser
      */
     public Expression parseExpression() throws ScanErrorException
     {
-        System.out.println("parsing expression");
+        //System.out.println("parsing expression");
         Expression exp1 = parseTerm();
         while(currentToken.equals("MATH : +") || currentToken.equals("MATH : -"))
         {
@@ -298,7 +302,7 @@ public class Parser
      */
     public Block parseStatements()
     {
-        System.out.println("parsing block");
+        //System.out.println("parsing block");
         ArrayList<Statement> returned = new ArrayList<Statement>();
         while(scanner.hasNext()) 
         {
@@ -311,7 +315,7 @@ public class Parser
                 break;
             }
         }
-        System.out.println("Parsed Block");
+        //System.out.println("Parsed Block");
         return new Block(returned);
     }
 
@@ -324,11 +328,11 @@ public class Parser
      */
     public Assignment parseAssignment() throws ScanErrorException
     {
-        System.out.println("parsing assignment");
+        //System.out.println("parsing assignment");
         if(env.hasProcedure(currentToken) || env.hasVariable(currentToken))
-            throw new ScanErrorException(currentToken + " Already exists");
+            System.out.println(currentToken + " Already exists");
         String temp = currentToken;
-        System.out.println("assigned var " + temp);
+        //System.out.println("assigned var " + temp);
         eat(currentToken);
         eat("EQ : :=");
         Expression exp = parseExpression();
