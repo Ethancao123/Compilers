@@ -59,9 +59,9 @@ public class EthanCScannerLab
     {
         letter = Pattern.compile("[a-zA-Z]");
         digit = Pattern.compile("[0-9]");
-        seperator = Pattern.compile("['|'|'('|')'|'{'|'}'|'['|']'|'<'|'>'|'\\'|'.'|';']");
-        operand = Pattern.compile("['>' '<' '+' '*' '/' '!']");
-        equalsPrefix = Pattern.compile("['>' '<' ':' '+' '*' '/']");
+        seperator = Pattern.compile("['|'|'('|')'|'{'|'}'|'['|']'|'<'|'>'|'\\'|'.'|';'|'=']");
+        operand = Pattern.compile("['>' '<' '+' '*' '/' '!' '%']");
+        equalsPrefix = Pattern.compile("['>' '<' ':' '+' '*' '/' '%']");
         //space = Pattern.compile("['' ' ' '\t' '\r' '\n' '\\s']");
         space = Pattern.compile("[\\s]");
         equals = Pattern.compile("['=']");
@@ -132,10 +132,10 @@ public class EthanCScannerLab
      */
     public String nextToken() throws ScanErrorException
     {
-        if(isWhitespace(currentChar))
+        while(!eof && isWhitespace(currentChar))
         {
-            while(hasNext() && isWhitespace(currentChar))
-                eat(currentChar);
+            eat(currentChar);
+            
         }
         if(currentChar == '-')
         {
@@ -165,18 +165,14 @@ public class EthanCScannerLab
         String prefix = "No Prefix";
         String lexeme = "";
         //is a number
-        if(currentChar != ',' && isDigit(currentChar))
+        if(isDigit(currentChar))
         {
             prefix = "NUM";
             lexeme += currentChar;
             eat(currentChar);
-            while(currentChar != ',' && hasNext() && !isWhitespace(currentChar) 
-                && !isSeperator(currentChar))
+            while(hasNext() && isDigit(currentChar))
             {
-                if(isDigit(currentChar))
-                    lexeme += currentChar;
-                else
-                    throw new ScanErrorException("expected a number found " + currentChar);
+                lexeme += currentChar;
                 eat(currentChar);
             }
         }
@@ -206,17 +202,22 @@ public class EthanCScannerLab
                 eat(currentChar);
             }
             //is a seperator
-            else if(isSeperator(lexeme.charAt(0)))
+            else
             {
-                lexeme += currentChar;
                 prefix = "SEP";
-                eat(currentChar);
             }
         }
+        else if(isEquals(currentChar))
+        {
+            lexeme += currentChar;
+            eat(currentChar);
+            prefix = "EQ";
+        }
             //is a whitespace
-        else if(lexeme.equals(" "))
-            return "";
+        else if(!hasNext())
+            return "EOF";
         lexeme = lexeme.strip();
+        //eat(currentChar);
         return "" + prefix + " : " + lexeme;
         
     }    
@@ -278,13 +279,12 @@ public class EthanCScannerLab
 
     /**
      * Determiens if a character is a whitespace
-     * @param input the character to check
+     * @param c the character to check
      * @return true if input is a whitespace; Otherwise, false
      */
-    public static boolean isWhitespace(char input)
+    public static boolean isWhitespace(char c)
     {
-        Matcher m = space.matcher(String.valueOf(input));
-        return m.matches();
+        return c == ' ' || c == '\t' || c == '\r' || c == '\n';
     }
 
     /**
