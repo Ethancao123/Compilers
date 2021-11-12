@@ -1,1 +1,1 @@
-PROCEDURE countUp(count, max); IF count <= max THEN BEGIN WRITELN(count); ignore := countUp(count + 1, max); END; 
+BEGIN x := 2; y := x + 1; x := x + y; WRITELN(x * y); END; .
