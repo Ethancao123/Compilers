@@ -39,7 +39,7 @@ public class Environment
      */
     public void setVariable(String variable, int value)
     {
-        if(parent.hasVariable(variable))
+        if(parent != null && parent.hasVariable(variable))
         {
             parent.setVariable(variable, value);
         }
@@ -58,7 +58,9 @@ public class Environment
     {
         if(variables.get(variable) != null)
             return variables.get(variable);
-        return parent.getVariable(variable);
+        if(parent != null)
+            return parent.getVariable(variable);
+        throw new IllegalArgumentException("Variable does not exist in environment");
     }
 
     /**
@@ -68,7 +70,11 @@ public class Environment
      */
     public boolean hasVariable(String var)
     {
-        return variables.get(var) != null || parent.hasVariable(var);
+        if(variables.get(var) != null)
+            return true;
+        if(parent != null)
+            return parent.hasVariable(var);
+        return false;
     }
 
     /**

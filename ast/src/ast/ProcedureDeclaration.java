@@ -47,6 +47,20 @@ public class ProcedureDeclaration extends Statement
 
     public void run(Environment env, List<Integer> args)
     {
-        
+        if(args != null)
+        {
+            if(args.size() != this.args.size())
+                throw new IllegalArgumentException("Parameters do not match declared params");
+            Environment subEnv = new Environment(env);
+            for(int i = 0; i < args.size(); i++)
+            {
+                subEnv.setVariable(this.args.get(i), args.get(i));
+            }
+            stmts.exec(subEnv);
+        }
+        else
+        {
+            stmts.exec(env);
+        }
     }
 }

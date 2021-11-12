@@ -39,14 +39,29 @@ public class Parser
             String id = currentToken;
             eat(currentToken);
             eat("SEP : (");
-            while(!currentToken.equals("SEP : )"))
+            if(currentToken.equals("SEP : )"))
             {
-                //test for arguments and consume them
+                eat("SEP : )");
+                eat("SEP : ;");
+                Statement stmts = parseStatement();
+                env.setProcedure(id, new ProcedureDeclaration(id, stmts));
             }
-            eat("SEP : )");
-            eat("SEP : ;");
-            Statement stmts = parseStatement();
-            env.setProcedure(id, new ProcedureDeclaration(id,stmts));
+            else
+            {
+                ArrayList<String> params = new ArrayList<String>();
+                params.add(currentToken.substring(6));
+                eat(currentToken);
+                while(currentToken.equals("SEP : ,"))
+                {
+                    eat("SEP : ,");
+                    params.add(currentToken.substring(6));
+                    eat(currentToken);
+                }
+                eat("SEP : )");
+                eat("SEP : ;");
+                Statement stmts = parseStatement();
+                env.setProcedure(id, new ProcedureDeclaration(id, stmts, params));
+            }
         }
         //System.out.println();
         return new Program(env, parseStatement());

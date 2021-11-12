@@ -157,15 +157,21 @@ public class EthanCScannerLab
             eat(currentChar);
             return "SEP : (";
         }
+        if(currentChar == ',')
+        {
+            eat(currentChar);
+            return "SEP : ,";
+        }
         String prefix = "No Prefix";
         String lexeme = "";
         //is a number
-        if(isDigit(currentChar))
+        if(currentChar != ',' && isDigit(currentChar))
         {
             prefix = "NUM";
             lexeme += currentChar;
             eat(currentChar);
-            while(hasNext() && !isWhitespace(currentChar) && !isSeperator(currentChar))
+            while(currentChar != ',' && hasNext() && !isWhitespace(currentChar) 
+                && !isSeperator(currentChar))
             {
                 if(isDigit(currentChar))
                     lexeme += currentChar;
