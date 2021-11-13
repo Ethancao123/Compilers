@@ -177,9 +177,16 @@ public class Parser
         if(currentToken.equals("ID : BEGIN"))
         {
             eat("ID : BEGIN");
-            returned = parseStatements();
+            //System.out.println("parsing block");
+            ArrayList<Statement> stmts = new ArrayList<Statement>();
+            while(!currentToken.equals("END")) 
+            {
+                stmts.add(parseStatement());
+            }
+            //System.out.println("Parsed Block");
             eat("ID : END");
             eat("SEP : ;");
+            returned = new Block(stmts);
         } 
         else if (currentToken.equals("ID : WRITELN"))
         {
@@ -228,6 +235,7 @@ public class Parser
             eat(currentToken);
             returned = new BinOp("*", parseFactor(), new Number(-1));
         }
+        //could be number, var, or proc if it is none you eat current token use parenthesis to determine if it is var or proc
         else if(currentToken.substring(0,2).equals("ID") && !env.hasVariable(currentToken) 
                 && !currentToken.equals("ID : END") && !env.hasProcedure(currentToken))
         {
@@ -250,7 +258,7 @@ public class Parser
             eat("SEP : )");
         }
         else
-            eat(currentToken);
+            eat("SEP : ;");
         //System.out.println("parsed factor");
         return returned;
     }
@@ -317,21 +325,7 @@ public class Parser
      */
     public Block parseStatements()
     {
-        //System.out.println("parsing block");
-        ArrayList<Statement> returned = new ArrayList<Statement>();
-        while(scanner.hasNext()) 
-        {
-            try 
-            {
-                returned.add(parseStatement());
-            } 
-            catch (Exception e) 
-            {
-                break;
-            }
-        }
-        //System.out.println("Parsed Block");
-        return new Block(returned);
+        
     }
 
     /**
