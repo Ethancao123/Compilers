@@ -179,11 +179,10 @@ public class Parser
             eat("ID : BEGIN");
             //System.out.println("parsing block");
             ArrayList<Statement> stmts = new ArrayList<Statement>();
-            while(!currentToken.equals("END")) 
+            while(!currentToken.equals("ID : END")) 
             {
                 stmts.add(parseStatement());
             }
-            //System.out.println("Parsed Block");
             eat("ID : END");
             eat("SEP : ;");
             returned = new Block(stmts);
@@ -230,7 +229,7 @@ public class Parser
             returned = parseExpression();
             eat("SEP : )");
         }
-        else if(currentToken.equals("MATH : -"))
+        else if(currentToken.equals("SEP : -"))
         {
             eat(currentToken);
             returned = new BinOp("*", parseFactor(), new Number(-1));
@@ -267,23 +266,23 @@ public class Parser
      * Parses a term 
      * @precondition the current token is a term
      * @postcondition term tokens have been eaten
-     * @return the result of the term math
+     * @return the result of the term SEP
      * @throws ScanErrorException when an illegal character is scanned
      */
     public Expression parseTerm() throws ScanErrorException
     {
         //System.out.println("parsing term");
         Expression exp1 = parseFactor();
-        while(currentToken.equals("MATH : *") || currentToken.equals("MATH : /"))
+        while(currentToken.equals("SEP : *") || currentToken.equals("SEP : /"))
         {
-            if(currentToken.equals("MATH : *"))
+            if(currentToken.equals("SEP : *"))
             {
-                eat("MATH : *");
+                eat("SEP : *");
                 exp1 = new BinOp("*", exp1, parseFactor());
             }
-            else if(currentToken.equals("MATH : /"))
+            else if(currentToken.equals("SEP : /"))
             {
-                eat("MATH : /");
+                eat("SEP : /");
                 exp1 = new BinOp("/", exp1, parseFactor());
             }
         }
@@ -301,16 +300,16 @@ public class Parser
     {
         //System.out.println("parsing expression");
         Expression exp1 = parseTerm();
-        while(currentToken.equals("MATH : +") || currentToken.equals("MATH : -"))
+        while(currentToken.equals("SEP : +") || currentToken.equals("SEP : -"))
         {
-            if(currentToken.equals("MATH : +"))
+            if(currentToken.equals("SEP : +"))
             {
-                eat("MATH : +");
+                eat("SEP : +");
                 exp1 = new BinOp("+", exp1, parseTerm());
             }
-            else if(currentToken.equals("MATH : -"))
+            else if(currentToken.equals("SEP : -"))
             {
-                eat("MATH : -");
+                eat("SEP : -");
                 exp1 = new BinOp("-", exp1, parseTerm());
             }
         }

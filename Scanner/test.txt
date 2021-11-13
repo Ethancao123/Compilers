@@ -1,14 +1,1 @@
-VAR x;
-PROCEDURE square(n);
-BEGIN
-RETURN n * n;
-END;
-BEGIN
-x := 1;
-WHILE x <= 10 DO
-BEGIN
-WRITELN(square(x));
-x := x + 1;
-END;
-END;
-.
+BEGIN WRITELN(1); WRITELN(2); BEGIN WRITELN(3); END; END; . 
