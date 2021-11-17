@@ -38,15 +38,8 @@ public class Environment
      * @param value The value of the variable
      */
     public void setVariable(String variable, int value)
-    {
-        if(parent != null && parent.hasVariable(variable))
-        {
-            parent.setVariable(variable, value);
-        }
-        else
-        {            
-            variables.put(variable, value);
-        }
+    {         
+        variables.put(variable, value);
     }
 
     /**
