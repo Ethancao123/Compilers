@@ -1,1 +1,1 @@
-PROCEDURE foo(d); ignore := bar(d + f); PROCEDURE bar(f); WRITELN(f); BEGIN f := 2; ignore := foo(3); WRITELN(f); END; .
+PROCEDURE max(x, y); BEGIN max := x; IF y > x THEN max := y; END; WRITELN(max(3, 5)); .

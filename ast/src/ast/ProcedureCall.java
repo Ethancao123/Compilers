@@ -38,7 +38,6 @@ public class ProcedureCall extends Expression
      */
     public int eval(Environment env)
     {
-        env.getProcedure(name).run(env, args);
-        return 0;
+        return env.getProcedure(name).run(env, args);
     }
 }

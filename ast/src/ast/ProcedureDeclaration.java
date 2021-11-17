@@ -45,13 +45,14 @@ public class ProcedureDeclaration extends Statement
         env.setProcedure(name,this);
     }
 
-    public void run(Environment env, List<Expression> args)
+    public int run(Environment env, List<Expression> args)
     {
+        Environment subEnv = null;
         if(args != null)
         {
             if(args.size() != this.a.size())
                 throw new IllegalArgumentException("Parameters do not match declared params");
-            Environment subEnv = new Environment(env);
+            subEnv = new Environment(env);
             for(int i = 0; i < args.size(); i++)
             {
                 subEnv.setVariable(this.a.get(i), args.get(i).eval(subEnv));
@@ -62,5 +63,8 @@ public class ProcedureDeclaration extends Statement
         {
             stmts.exec(new Environment(env));
         }
+        if(subEnv != null && subEnv.hasVariable(name))
+            return subEnv.getVariable(name);
+        return 0;
     }
 }
