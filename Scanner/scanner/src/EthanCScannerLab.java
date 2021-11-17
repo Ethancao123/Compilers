@@ -17,7 +17,6 @@ public class EthanCScannerLab
     private static Pattern seperator;
     private static Pattern operand;
     private static Pattern equalsPrefix;
-    private static Pattern space;
     private static Pattern equals;
 
     /**
@@ -63,7 +62,6 @@ public class EthanCScannerLab
         operand = Pattern.compile("['>' '<' '+' '*' '/' '!' '%']");
         equalsPrefix = Pattern.compile("['>' '<' ':' '+' '*' '/' '%']");
         //space = Pattern.compile("['' ' ' '\t' '\r' '\n' '\\s']");
-        space = Pattern.compile("[\\s]");
         equals = Pattern.compile("['=']");
     }
 

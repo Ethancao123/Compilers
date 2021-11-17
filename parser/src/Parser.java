@@ -241,29 +241,24 @@ public class Parser
             eat(currentToken);
             if(currentToken.equals("SEP : ("))
             {
-                if(true)
+                eat("SEP : (");
+                if(currentToken.equals("SEP : )"))
                 {
-                    eat("SEP : (");
-                    if(currentToken.equals("SEP : )"))
-                    {
-                        returned = new ProcedureCall(pastToken);
-                        eat("SEP : )");
-                    }
-                    else
-                    {
-                        ArrayList<Expression> args = new ArrayList<Expression>();
-                        args.add(parseExpression());
-                        while (currentToken.equals("SEP : ,"))
-                        {
-                            eat("SEP : ,");
-                            args.add(parseExpression());
-                        }
-                        eat("SEP : )");
-                        returned = new ProcedureCall(pastToken, args);
-                    }
+                    returned = new ProcedureCall(pastToken);
+                    eat("SEP : )");
                 }
-                else 
-                    throw new IllegalArgumentException("Procedure " + pastToken + " has not been declared");
+                else
+                {
+                    ArrayList<Expression> args = new ArrayList<Expression>();
+                    args.add(parseExpression());
+                    while (currentToken.equals("SEP : ,"))
+                    {
+                        eat("SEP : ,");
+                        args.add(parseExpression());
+                    }
+                    eat("SEP : )");
+                    returned = new ProcedureCall(pastToken, args);
+                }
             }
             else
             {

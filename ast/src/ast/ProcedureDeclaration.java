@@ -37,7 +37,7 @@ public class ProcedureDeclaration extends Statement
     }
 
     /**
-     * Executes the procedure declaration
+     * Declares the procedure in the environment
      * @param env the environemnt to execute the declaration in
      */
     public void exec(Environment env)
@@ -45,6 +45,12 @@ public class ProcedureDeclaration extends Statement
         env.setProcedure(name,this);
     }
 
+    /**
+     * Runs the procedure declaration
+     * @param env the environment to run the procedure declaration
+     * @param args the arguments of the procedure call
+     * @return the return value of the procedure if it exists; Otherwise, 0
+     */
     public int run(Environment env, List<Expression> args)
     {
         Environment subEnv = null;
