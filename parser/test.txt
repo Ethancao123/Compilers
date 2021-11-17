@@ -1,1 +1,1 @@
-BEGIN x := 2; y := x + 1; x := x + y; WRITELN(x * y); END; . 
+PROCEDURE print(n); WRITELN(n); BEGIN n := 3; ignore := print(5); WRITELN(n); END; . 

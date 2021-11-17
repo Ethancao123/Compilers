@@ -27,6 +27,8 @@ public class Program
      */
     public void exec()
     {
+        if(stmts == null)
+            return;
         stmts.exec(env);
         //env.printVariables();
     }

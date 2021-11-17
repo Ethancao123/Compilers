@@ -10,7 +10,7 @@ import java.util.*;
 public class ProcedureCall extends Expression
 {
     private String name;
-    private List<Integer> args;
+    private List<Expression> args;
     /**
      * Constructor for objects of the ProcedureCall class
      * @param n the name of the procedure that is called
@@ -25,7 +25,7 @@ public class ProcedureCall extends Expression
      * @param n the name of the procedure that is called
      * @param a the arguments of the procedure call
      */
-    public ProcedureCall(String n, List<Integer> a)
+    public ProcedureCall(String n, List<Expression> a)
     {
         name = n;
         args = a;
@@ -38,7 +38,7 @@ public class ProcedureCall extends Expression
      */
     public int eval(Environment env)
     {
-        env.getProcedure(name).run(new Environment(env), args);
+        env.getProcedure(name).run(env, args);
         return 0;
     }
 }

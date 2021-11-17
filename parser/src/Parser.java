@@ -49,12 +49,12 @@ public class Parser
             else
             {
                 ArrayList<String> params = new ArrayList<String>();
-                params.add(currentToken.substring(6));
+                params.add(currentToken);
                 eat(currentToken);
                 while(currentToken.equals("SEP : ,"))
                 {
                     eat("SEP : ,");
-                    params.add(currentToken.substring(6));
+                    params.add(currentToken);
                     eat(currentToken);
                 }
                 eat("SEP : )");
@@ -216,6 +216,7 @@ public class Parser
      */
     public Expression parseFactor() throws ScanErrorException
     {
+        String pastToken;
         //System.out.println("parsing factor");
         ////System.out.println("parsing factor");
         Expression returned = null;
@@ -234,27 +235,40 @@ public class Parser
             eat(currentToken);
             returned = new BinOp("*", parseFactor(), new Number(-1));
         }
-        //could be number, var, or proc if it is none you eat current token use parenthesis to determine if it is var or proc
-        else if(currentToken.substring(0,2).equals("ID") && !env.hasVariable(currentToken) 
-                && !currentToken.equals("ID : END") && !env.hasProcedure(currentToken))
+        else if(currentToken.substring(0,2).equals("ID"))
         {
-            String temp = currentToken;
+            pastToken = currentToken;
             eat(currentToken);
-            returned = new Variable(temp);
-        }
-        else if(currentToken.substring(0,2).equals("ID") && env.hasVariable(currentToken) 
-                && !currentToken.equals("ID : END"))
-        {
-            return new Number(env.getVariable(currentToken));
-        }
-        else if(currentToken.substring(0,2).equals("ID") && env.hasProcedure(currentToken) 
-                && !currentToken.equals("ID : END"))
-        {
-            String temp = currentToken;
-            eat(currentToken);
-            returned = new ProcedureCall(temp);
-            eat("SEP : (");
-            eat("SEP : )");
+            if(currentToken.equals("SEP : ("))
+            {
+                if(true)
+                {
+                    eat("SEP : (");
+                    if(currentToken.equals("SEP : )"))
+                    {
+                        returned = new ProcedureCall(pastToken);
+                        eat("SEP : )");
+                    }
+                    else
+                    {
+                        ArrayList<Expression> args = new ArrayList<Expression>();
+                        args.add(parseExpression());
+                        while (currentToken.equals("SEP : ,"))
+                        {
+                            eat("SEP : ,");
+                            args.add(parseExpression());
+                        }
+                        eat("SEP : )");
+                        returned = new ProcedureCall(pastToken, args);
+                    }
+                }
+                else 
+                    throw new IllegalArgumentException("Procedure " + pastToken + " has not been declared");
+            }
+            else
+            {
+                returned = new Variable(pastToken);
+            }
         }
         else
             eat("SEP : ;");
@@ -314,17 +328,6 @@ public class Parser
             }
         }
         return exp1;
-    }
-
-    /**
-     * Parses multiple statements
-     * @precondition the curent token is the start of multiple statements
-     * @postcondition all the statements have been eaten
-     * @return a Block object
-     */
-    public Block parseStatements()
-    {
-        
     }
 
     /**
