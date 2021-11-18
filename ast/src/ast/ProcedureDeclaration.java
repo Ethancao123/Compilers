@@ -45,11 +45,19 @@ public class ProcedureDeclaration extends Statement
         env.setProcedure(name,this);
     }
 
+    /**
+     * Gets the list of arguments required for a procedure
+     * @return the list of arguments
+     */
     public List<String> getArgs()
     {
         return a;
     }
 
+    /**
+     * Gets the statements of a procedure
+     * @return the statements of the procedure
+     */
     public Statement getStmts()
     {
         return stmts;

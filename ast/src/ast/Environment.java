@@ -2,8 +2,6 @@ package ast;
 
 import java.util.*;
 
-import javax.lang.model.util.ElementScanner6;
-
 /**
  * Environment to handle variables for a Pascal compiler
  * @author Ethan Cao
@@ -51,6 +49,11 @@ public class Environment
             declareVariable(variable, value);
     }
 
+    /**
+     * Declares a variable in the local environment
+     * @param variable the name of the variable
+     * @param value the value of the variable
+     */
     public void declareVariable(String variable, int value)
     {
         variables.put(variable, value);
