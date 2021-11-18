@@ -2,6 +2,8 @@ package ast;
 
 import java.util.*;
 
+import javax.lang.model.util.ElementScanner6;
+
 /**
  * Environment to handle variables for a Pascal compiler
  * @author Ethan Cao
@@ -39,9 +41,20 @@ public class Environment
      */
     public void setVariable(String variable, int value)
     {         
-        variables.put(variable, value);
+        if(this.hasVariable(variable))
+        {
+            variables.put(variable, value);
+        }
+        else if(parent != null && parent.hasVariable(variable))
+            parent.declareVariable(variable, value);
+        else
+            declareVariable(variable, value);
     }
 
+    public void declareVariable(String variable, int value)
+    {
+        variables.put(variable, value);
+    }
     /**
      * Getter for variables in the Environment
      * @param variable name of the variable to get from the environment
@@ -65,8 +78,8 @@ public class Environment
     {
         if(variables.get(var) != null)
             return true;
-        if(parent != null)
-            return parent.hasVariable(var);
+        // if(parent != null)
+        //     return parent.hasVariable(var);
         return false;
     }
 

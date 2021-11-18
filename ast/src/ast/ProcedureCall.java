@@ -38,6 +38,25 @@ public class ProcedureCall extends Expression
      */
     public int eval(Environment env)
     {
-        return env.getProcedure(name).run(env, args);
+        List<String> argsList = env.getProcedure(name).getArgs();
+        Statement stmts = env.getProcedure(name).getStmts();
+        Environment subEnv = new Environment(env);
+        if(args != null)
+        {
+            if(args.size() != argsList.size())
+                throw new IllegalArgumentException("Parameters do not match declared params");
+            for(int i = 0; i < args.size(); i++)
+            {
+                subEnv.declareVariable(argsList.get(i), args.get(i).eval(env));
+            }
+            stmts.exec(subEnv);
+        }
+        else
+        {
+            stmts.exec(new Environment(env));
+        }
+        if(subEnv != null && subEnv.hasVariable(name))
+            return subEnv.getVariable(name);
+        return 0;
     }
 }
