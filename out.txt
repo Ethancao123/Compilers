@@ -1,27 +1,7 @@
 	.data
 	newLine: .asciiz "\n"
+	VARast.Variable@64b8f8f4: .word 0
+	VARast.Variable@2db0f6b2: .word 0
 	.text
 	.globl main
 main:
-	li $v0 1
-	subu $sp $sp 4
-	sw $v0 ($sp)
-	li $v0 2
-	subu $sp $sp 4
-	sw $v0 ($sp)
-	li $v0 3
-	lw $t0 ($sp)
-	addu $sp $sp 4
-	mult $v0 $t0
-	mflo $v0
-	lw $t0 ($sp)
-	addu $sp $sp 4
-	addu $v0 $v0 $t0
-	move $a0 $v0
-	li $v0 1
-	syscall
-	li $v0 4
-	la $a0 newLine
-	syscall
-	li $v0 10
-	syscall

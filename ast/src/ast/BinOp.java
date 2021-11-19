@@ -66,14 +66,14 @@ public class BinOp extends Expression
                 e.emit("mflo $v0");
                 break;
             case "/":
-                e.emit("div $v0 $t0");
+                e.emit("div $t0 $v0");
                 e.emit("mflo $v0");
                 break;
             case "+":
                 e.emit("addu $v0 $v0 $t0");
                 break;
             case "-":
-                e.emit("subu $v0 $v0 $t0");
+                e.emit("subu $v0 $t0 $v0");
                 break;
             default:
                 throw new IllegalArgumentException(op + " is not an operator");

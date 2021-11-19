@@ -11,6 +11,7 @@ import ast.Number;
  */
 public class Parser 
 {
+    //TODO: Negative numbers still throwing
     private EthanCScannerLab scanner;
     private String currentToken;
     private Environment env = new Environment();
@@ -33,6 +34,20 @@ public class Parser
      */
     public Program parseProgram() throws ScanErrorException
     {
+        ArrayList<Variable> vars = new ArrayList<Variable>();
+        while(currentToken.equals("ID : VAR"))
+        {
+            eat(currentToken);
+            vars.add(new Variable(currentToken.substring(5)));
+            eat(currentToken);
+            while(currentToken.equals("SEP : ,"))
+            {
+                eat(currentToken);
+                vars.add(new Variable(currentToken.substring(5)));
+                eat(currentToken);
+            }
+            eat("SEP : ;");
+        }
         while(currentToken.equals("ID : PROCEDURE"))
         {
             eat("ID : PROCEDURE");
@@ -63,8 +78,7 @@ public class Parser
                 env.setProcedure(id, new ProcedureDeclaration(id, stmts, params));
             }
         }
-        //System.out.println();
-        return new Program(env, parseStatement());
+        return new Program(env, parseStatement(), vars);
     }
 
     /**

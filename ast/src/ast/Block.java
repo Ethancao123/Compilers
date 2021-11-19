@@ -28,4 +28,10 @@ public class Block extends Statement
         for(int i = 0; i < stmts.size(); i++)
             stmts.get(i).exec(env);
     }
+
+    public void compile(Emitter e)
+    {
+        for(int i = 0; i < stmts.size(); i++)
+            stmts.get(i).compile(e);
+    }
 }
