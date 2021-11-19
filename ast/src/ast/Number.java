@@ -27,4 +27,9 @@ public class Number extends Expression
     {
         return value;
     }
+
+    public void compile(Emitter e)
+    {
+        e.emit("li $v0 " + value);
+    }
 }

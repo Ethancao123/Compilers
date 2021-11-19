@@ -26,4 +26,16 @@ public class Writeln extends Statement
     {
         System.out.println(exp.eval(env));
     }
+
+    public void compile(Emitter e)
+    {
+        exp.compile(e);
+        e.emit("move $a0 $v0");
+        e.emit("li $v0 1");
+        e.emit("syscall");
+        //make new line
+        e.emit("li $v0 4");
+        e.emit("la $a0 newLine");
+        e.emit("syscall");
+    }
 }

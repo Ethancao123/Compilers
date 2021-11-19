@@ -32,4 +32,16 @@ public class Program
         stmts.exec(env);
         //env.printVariables();
     }
+
+    public void compile(Emitter e)
+    {
+        e.emit(".data");
+        e.emit("newLine: .asciiz \"\\n\"");
+        e.emit(".text");
+        e.emit(".globl main");
+        e.emit("main:");
+        stmts.compile(e);
+        e.emit("li $v0 10");
+        e.emit("syscall");
+    }
 }
