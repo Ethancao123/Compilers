@@ -79,11 +79,7 @@ public class Environment
      */
     public boolean hasVariable(String var)
     {
-        if(variables.get(var) != null)
-            return true;
-        // if(parent != null)
-        //     return parent.hasVariable(var);
-        return false;
+        return variables.get(var) != null;
     }
 
     /**
