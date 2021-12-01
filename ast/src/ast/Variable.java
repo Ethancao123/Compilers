@@ -25,7 +25,9 @@ public class Variable extends Expression
      */
     public String getName()
     {
-        return name;
+        if(name.indexOf(':') == -1)
+            return name;
+        return name.substring(name.indexOf(':') + 2);
     }
 
     /**
@@ -36,5 +38,11 @@ public class Variable extends Expression
     public int eval(Environment env)
     {
         return env.getVariable(name);
+    }
+
+    public void compile(Emitter e)
+    {
+        e.emit("la $t0 VAR" + this.getName());
+        e.emit("lw $v0 0($t0)");
     }
 }

@@ -43,7 +43,7 @@ public class Program
         e.emit("newLine: .asciiz \"\\n\"");
         for(Variable v : vars)
         {
-            e.emit("VAR" + v + ": .word 0");
+            e.emit("VAR" + v.getName() + ": .word 0");
         }
         e.emit(".text");
         e.emit(".globl main");

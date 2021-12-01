@@ -29,4 +29,11 @@ public class Assignment extends Statement
     {
         env.setVariable(var.getName(), exp.eval(env));
     }
+
+    public void compile(Emitter e)
+    {
+        exp.compile(e);
+        e.emit("la $t0 VAR" + var.getName());
+        e.emit("sw $v0 0($t0)");
+    }
 }
