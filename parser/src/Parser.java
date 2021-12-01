@@ -359,7 +359,7 @@ public class Parser
         String temp = currentToken;
         //System.out.println("assigned var " + temp);
         eat(currentToken);
-        eat("EQ : :=");
+        eat("SEP : :=");
         Expression exp = parseExpression();
         eat("SEP : ;");
         return new Assignment(temp, exp);

@@ -32,4 +32,15 @@ public class While extends Statement
             stmt.exec(env);
         }
     }
+
+    public void compile(Emitter e)
+    {
+        String endTag = "whileEnd" + e.nextLabelID();
+        String beginTag = "whileBegin" + e.nextLabelID();
+        cond.compile(e, endTag);
+        e.emit(beginTag + ":");
+        stmt.compile(e);
+        cond.compileInverse(e, beginTag);
+        e.emit(endTag + ":");
+    }
 }

@@ -1,48 +1,41 @@
 	.data
 	newLine: .asciiz "\n"
+	VARcount: .word 0
 	.text
 	.globl main
 main:
-	li $v0 14
-	move $t0 $v0
-	li $v0 14
-	bne $v0 $t0 endif0
-	li $v0 14
-	move $t0 $v0
-	li $v0 14
-	beq $v0 $t0 endif1
-	li $v0 3
-	move $a0 $v0
 	li $v0 1
-	syscall
-	li $v0 4
-	la $a0 newLine
-	syscall
-endif1:
-	li $v0 14
-	move $t0 $v0
-	li $v0 14
-	bgt $v0 $t0 endif2
-	li $v0 4
-	move $a0 $v0
-	li $v0 1
-	syscall
-	li $v0 4
-	la $a0 newLine
-	syscall
-endif2:
-endif0:
-	li $v0 14
-	move $t0 $v0
+	la $t0 VARcount
+	sw $v0 0($t0)
 	li $v0 15
-	ble $v0 $t0 endif3
-	li $v0 5
+	move $t1 $v0
+	la $t0 VARcount
+	lw $v0 0($t0)
+	bgt $v0 $t1 whileEnd0
+whileBegin1:
+	la $t0 VARcount
+	lw $v0 0($t0)
 	move $a0 $v0
 	li $v0 1
 	syscall
 	li $v0 4
 	la $a0 newLine
 	syscall
-endif3:
+	la $t0 VARcount
+	lw $v0 0($t0)
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	li $v0 1
+	lw $t0 ($sp)
+	addu $sp $sp 4
+	addu $v0 $v0 $t0
+	la $t0 VARcount
+	sw $v0 0($t0)
+	li $v0 15
+	move $t1 $v0
+	la $t0 VARcount
+	lw $v0 0($t0)
+	ble $v0 $t1 whileBegin1
+whileEnd0:
 	li $v0 10
 	syscall
