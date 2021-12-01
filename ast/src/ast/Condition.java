@@ -51,4 +51,34 @@ public class Condition
                 throw new IllegalArgumentException(relop + " is not an relative operator");
         }
     }
+
+    public void compile(Emitter e, String tag)
+    {
+        exp2.compile(e);
+        e.emit("move $t0 $v0");
+        exp1.compile(e);
+        switch(relop)
+        {
+            case "SEP : =":
+                e.emit("bne $v0 $t0 " + tag);
+                return;
+            case "SEP : <>":
+                e.emit("beq $v0 $t0 " + tag);
+                return;
+            case "SEP : <":
+                e.emit("bge $v0 $t0 " + tag);
+                return;
+            case "SEP : >":
+                e.emit("ble $v0 $t0 " + tag);
+                return;
+            case "SEP : <=":
+                e.emit("bgt $v0 $t0 " + tag);
+                return;
+            case "SEP : >=":
+                e.emit("blt $v0 $t0 " + tag);
+                return;
+            default:
+                throw new IllegalArgumentException(relop + " is not an relative operator");
+        }
+    }
 }

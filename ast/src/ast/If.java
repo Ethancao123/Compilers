@@ -32,4 +32,12 @@ public class If extends Statement
             stmt.exec(env);
         }
     }
+
+    public void compile(Emitter e)
+    {
+        String tag = "endif" + e.nextLabelID();
+        cond.compile(e, tag);
+        stmt.compile(e);
+        e.emit(tag + ":");
+    }
 }

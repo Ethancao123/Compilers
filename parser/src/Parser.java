@@ -141,6 +141,11 @@ public class Parser
         Expression e1 = parseExpression();
         String r = currentToken;
         eat(currentToken);
+        if(currentToken.equals("SEP : >") || currentToken.equals("SEP : ="))
+        {
+            r += currentToken.substring(currentToken.indexOf(":") + 2);
+            eat(currentToken);
+        }
         Expression e2 = parseExpression();
         //System.out.println("parsed condition");
         return new Condition(e1, r, e2);

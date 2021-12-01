@@ -4,6 +4,7 @@ import java.io.*;
 public class Emitter
 {
     private PrintWriter out;
+    private int nextLabel = 0;
 
     //creates an emitter for writing to a new file with given name
     public Emitter(String outputFileName)
@@ -43,4 +44,9 @@ public class Emitter
 		emit("lw " + reg + " ($sp)");
         emit("addu $sp $sp 4");
 	}
+
+    public int nextLabelID()
+    {
+        return nextLabel++;
+    }
 }

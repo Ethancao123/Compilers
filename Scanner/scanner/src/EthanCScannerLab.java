@@ -196,7 +196,7 @@ public class EthanCScannerLab
             if(isEquals(currentChar))
             {
                 lexeme += currentChar;
-                prefix = "EQ";
+                prefix = "SEP";
                 eat(currentChar);
             }
             //is a seperator
@@ -209,7 +209,7 @@ public class EthanCScannerLab
         {
             lexeme += currentChar;
             eat(currentChar);
-            prefix = "EQ";
+            prefix = "SEP";
         }
             //is a whitespace
         else if(!hasNext())
