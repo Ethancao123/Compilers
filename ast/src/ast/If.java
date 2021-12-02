@@ -35,6 +35,7 @@ public class If extends Statement
 
     public void compile(Emitter e)
     {
+        e.emit("# if statement");
         String tag = "endif" + e.nextLabelID();
         cond.compile(e, tag);
         stmt.compile(e);

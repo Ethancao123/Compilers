@@ -18,7 +18,6 @@ public class Variable extends Expression
     {
         name = n;
     }
-
     /**
      * Getter for the name of the variable
      * @return the name of the variable
@@ -42,6 +41,7 @@ public class Variable extends Expression
 
     public void compile(Emitter e)
     {
+        e.emit("# evaluates a variable");
         e.emit("la $t0 VAR" + this.getName());
         e.emit("lw $v0 0($t0)");
     }

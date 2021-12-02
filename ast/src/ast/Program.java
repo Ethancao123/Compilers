@@ -39,6 +39,11 @@ public class Program
 
     public void compile(Emitter e)
     {
+        e.emit("#");
+        e.emit("#   Auto generated code created by a PASCAL compiler");
+        e.emit("#   @author Ethan Cao");
+        e.emit("#   @version 12/2/21");
+        e.emit("#");
         e.emit(".data");
         e.emit("newLine: .asciiz \"\\n\"");
         for(Variable v : vars)
@@ -49,6 +54,7 @@ public class Program
         e.emit(".globl main");
         e.emit("main:");
         stmts.compile(e);
+        e.emit("# ending program");
         e.emit("li $v0 10");
         e.emit("syscall");
     }

@@ -35,6 +35,7 @@ public class While extends Statement
 
     public void compile(Emitter e)
     {
+        e.emit("# while loop");
         String endTag = "whileEnd" + e.nextLabelID();
         String beginTag = "whileBegin" + e.nextLabelID();
         cond.compile(e, endTag);
