@@ -30,6 +30,10 @@ public class Assignment extends Statement
         env.setVariable(var.getName(), exp.eval(env));
     }
 
+    /**
+     * Compiles the variable assignment
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         exp.compile(e);

@@ -33,6 +33,10 @@ public class If extends Statement
         }
     }
 
+    /**
+     * Compiles an if statement
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("# if statement");

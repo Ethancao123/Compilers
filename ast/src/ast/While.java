@@ -33,6 +33,10 @@ public class While extends Statement
         }
     }
 
+    /**
+     * Compiles a while loop
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("# while loop");

@@ -27,6 +27,10 @@ public class Writeln extends Statement
         System.out.println(exp.eval(env));
     }
 
+    /**
+     * Compiles a print statement
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("# print statement");

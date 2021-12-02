@@ -39,6 +39,10 @@ public class Variable extends Expression
         return env.getVariable(name);
     }
 
+    /**
+     * Compiles a variable
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("# evaluates a variable");

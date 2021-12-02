@@ -17,6 +17,7 @@ public class Program
      * Constructor for objects of the Program class
      * @param e Environment of the program
      * @param s Statements of the program
+     * @param v the variables declared for the program
      */
     public Program(Environment e, Statement s, List<Variable> v)
     {
@@ -37,6 +38,10 @@ public class Program
         //env.printVariables();
     }
 
+    /**
+     * Compiles a pascal program
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("#");

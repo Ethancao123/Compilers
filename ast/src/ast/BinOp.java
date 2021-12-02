@@ -53,6 +53,10 @@ public class BinOp extends Expression
         }
     }
 
+    /**
+     * Compiles the binary operation
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("# binary operation");

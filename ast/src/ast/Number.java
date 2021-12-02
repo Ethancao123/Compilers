@@ -28,6 +28,10 @@ public class Number extends Expression
         return value;
     }
 
+    /**
+     * Compiles a number
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("# loading number");

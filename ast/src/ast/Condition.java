@@ -52,6 +52,11 @@ public class Condition
         }
     }
 
+    /**
+     * Compiles the conditional statement
+     * @param e the emitter to write the file
+     * @param tag the tag jump to
+     */
     public void compile(Emitter e, String tag)
     {
         exp2.compile(e);
@@ -82,6 +87,11 @@ public class Condition
         }
     }
 
+    /**
+     * Compiles the invese of the conditional statement/
+     * @param e the emitter to write the file
+     * @param tag the tag to jump to
+     */
     public void compileInverse(Emitter e, String tag)
     {
         exp2.compile(e);
