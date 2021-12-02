@@ -33,9 +33,9 @@ main:
     li $v0, 5
     syscall
     move $a0, $v0
-
     move $a1, $t1
     move $a2, $t0
+    #calls the max3 subroutine
     subu $sp, $sp, 4
     sw $ra, ($sp)
     jal max3
@@ -59,6 +59,7 @@ greater:
     jr $ra
 
 max3: 
+    #calls the max2 subroutine
     subu $sp, $sp, 4
     sw $ra, ($sp)
     jal max2
@@ -66,6 +67,7 @@ max3:
     addu $sp, $sp, 4
     move $a0, $v0
     move $a1, $a2
+    #calls the max2 subroutine
     subu $sp, $sp, 4
     sw $ra, ($sp)
     jal max2

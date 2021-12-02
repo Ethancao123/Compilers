@@ -27,6 +27,7 @@ main:
     syscall
     move $a0, $v0
     move $a1, $t1
+    #calls the max2 subroutine
     subu $sp, $sp, 4
     sw $ra, ($sp)
     jal max2
