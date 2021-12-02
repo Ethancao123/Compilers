@@ -99,11 +99,29 @@ main:
 endif0:
 	# block of statements
 	# if statement
+	# binary operation
 	# loading number
 	li $v0 14
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	# loading number
+	li $v0 -1
+	lw $t0 ($sp)
+	addu $sp $sp 4
+	mult $v0 $t0
+	mflo $v0
 	move $t1 $v0
+	# binary operation
 	# loading number
 	li $v0 14
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	# loading number
+	li $v0 -1
+	lw $t0 ($sp)
+	addu $sp $sp 4
+	mult $v0 $t0
+	mflo $v0
 	bne $v0 $t1 endif1
 	# block of statements
 	# if statement

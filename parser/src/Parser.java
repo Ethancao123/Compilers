@@ -11,7 +11,6 @@ import ast.Number;
  */
 public class Parser 
 {
-    //TODO: Negative numbers still throwing
     private EthanCScannerLab scanner;
     private String currentToken;
     private Environment env = new Environment();
@@ -249,7 +248,7 @@ public class Parser
             returned = parseExpression();
             eat("SEP : )");
         }
-        else if(currentToken.equals("SEP : -"))
+        else if(currentToken.equals("MATH : -"))
         {
             eat(currentToken);
             returned = new BinOp("*", parseFactor(), new Number(-1));
