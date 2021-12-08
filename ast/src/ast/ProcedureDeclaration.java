@@ -62,4 +62,11 @@ public class ProcedureDeclaration extends Statement
     {
         return stmts;
     }
+
+    public void compile(Emitter e)
+    {
+        e.emit("PROC" + name.substring(name.indexOf(":") + 2) + ":");
+        stmts.compile(e);
+        e.emit("jr $ra");
+    }
 }

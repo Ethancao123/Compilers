@@ -11,6 +11,6 @@ public class ParserCompiler
     public static void main(String[] args) throws Exception 
     {
         Parser parse = new Parser(new EthanCScannerLab(new FileInputStream("parser/test.txt")));
-        parse.parseProgram().compile(new Emitter("out.txt"));
+        parse.parseProgram().compile(new Emitter("out.asm"));
     }
 }

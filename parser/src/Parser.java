@@ -248,7 +248,7 @@ public class Parser
             returned = parseExpression();
             eat("SEP : )");
         }
-        else if(currentToken.equals("MATH : -"))
+        else if(currentToken.equals("SEP : -"))
         {
             eat(currentToken);
             returned = new BinOp("*", parseFactor(), new Number(-1));

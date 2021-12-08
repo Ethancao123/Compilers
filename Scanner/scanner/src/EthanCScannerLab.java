@@ -138,7 +138,7 @@ public class EthanCScannerLab
         if(currentChar == '-')
         {
             eat(currentChar);
-            return "MATH : -";
+            return "SEP : -";
         }
         if(currentChar == ';')
         {

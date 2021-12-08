@@ -62,5 +62,6 @@ public class Program
         e.emit("# ending program");
         e.emit("li $v0 10");
         e.emit("syscall");
+        env.compile(e);
     }
 }

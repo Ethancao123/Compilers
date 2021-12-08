@@ -59,4 +59,20 @@ public class ProcedureCall extends Expression
             return subEnv.getVariable(name);
         return 0;
     }
+
+    public void compile(Emitter e)
+    {
+        e.emitPush("$ra");
+        for(Expression exp : args)
+        {
+            exp.compile(e);
+            e.emitPush("$v0");
+        }
+        e.emit("jal PROC" + name.substring(name.indexOf(":") + 2));
+        for(Expression exp : args)
+        {
+            e.emitPop("$t1");
+        }
+        e.emitPop("$ra");
+    }
 }

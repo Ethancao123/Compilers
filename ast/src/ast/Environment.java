@@ -126,4 +126,10 @@ public class Environment
         }
         return parent.hasProcedure(name);
     }
+
+    public void compile(Emitter e)
+    {
+        for(Map.Entry<String,ProcedureDeclaration> entry : procedures.entrySet())
+            entry.getValue().compile(e);
+    }
 }
