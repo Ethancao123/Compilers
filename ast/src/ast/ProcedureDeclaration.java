@@ -65,8 +65,10 @@ public class ProcedureDeclaration extends Statement
 
     public void compile(Emitter e)
     {
+        e.setProcedureContext(this);
         e.emit("PROC" + name.substring(name.indexOf(":") + 2) + ":");
         stmts.compile(e);
         e.emit("jr $ra");
+        e.clearProcedureContext();
     }
 }

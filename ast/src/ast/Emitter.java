@@ -10,6 +10,7 @@ public class Emitter
 {
     private PrintWriter out;
     private int nextLabel = 0;
+    private ProcedureDeclaration proc;
 
     /**
      * creates an emitter for writing to a new file with given name
@@ -73,5 +74,22 @@ public class Emitter
     public int nextLabelID()
     {
         return nextLabel++;
+    }
+
+    public void setProcedureContext(ProcedureDeclaration procedure)
+    {
+        proc = procedure;
+    }
+
+    public void clearProcedureContext()
+    {
+        proc = null;
+    }
+
+    public boolean isLocalVariable(String varName)
+    {
+        if(proc == null)
+            return false;
+        return proc.getArgs().contains(varName);
     }
 }
