@@ -92,4 +92,11 @@ public class Emitter
             return false;
         return proc.getArgs().contains(varName);
     }
+
+    public int getOffset(String varName)
+    {
+        if(proc == null)
+            return -1;
+        return (proc.getArgs().size() - proc.getArgs().indexOf(varName) - 1) * 4;
+    }
 }
