@@ -46,9 +46,10 @@ public class Variable extends Expression
     public void compile(Emitter e)
     {
         e.emit("# evaluates a variable");
-        if(e.isLocalVariable(name))
+        if(e.isLocalVariable(this.getName()))
         {
-            e.emit("lw $v0 " + e.getOffset(name) + "($sp)");
+            int offset = e.getOffset(this.getName());
+            e.emit("lw $v0 " + offset + "($sp)");
         }
         else
         {

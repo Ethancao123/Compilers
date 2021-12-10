@@ -11,6 +11,7 @@ public class Emitter
     private PrintWriter out;
     private int nextLabel = 0;
     private ProcedureDeclaration proc;
+    private int excessStackHeight = 0;
 
     /**
      * creates an emitter for writing to a new file with given name
@@ -55,6 +56,7 @@ public class Emitter
     {
         emit("subu $sp $sp 4");
         emit("sw " + reg + " ($sp)");
+        excessStackHeight += 4;
     }
 
     /**
@@ -65,6 +67,7 @@ public class Emitter
     {
         emit("lw " + reg + " ($sp)");
         emit("addu $sp $sp 4");
+        excessStackHeight -= 4;
     }
 
     /**
@@ -79,6 +82,7 @@ public class Emitter
     public void setProcedureContext(ProcedureDeclaration procedure)
     {
         proc = procedure;
+        excessStackHeight = 0;
     }
 
     public void clearProcedureContext()
@@ -90,6 +94,8 @@ public class Emitter
     {
         if(proc == null)
             return false;
+        if(proc.getName().equals(varName))
+            return true;
         return proc.getArgs().contains(varName);
     }
 
@@ -97,6 +103,6 @@ public class Emitter
     {
         if(proc == null)
             return -1;
-        return (proc.getArgs().size() - proc.getArgs().indexOf(varName) - 1) * 4;
+        return excessStackHeight + (proc.getArgs().size() - proc.getArgs().indexOf(varName)) * 4;
     }
 }

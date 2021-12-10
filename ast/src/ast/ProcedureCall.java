@@ -74,5 +74,6 @@ public class ProcedureCall extends Expression
             e.emitPop("$t1");
         }
         e.emitPop("$ra");
+        e.emitPop("$v0");
     }
 }

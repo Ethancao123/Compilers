@@ -33,6 +33,10 @@ public class ProcedureDeclaration extends Statement
     {
         name = n;
         stmts = s;
+        for(int i = 0; i < a.size(); i++)
+        {
+            a.set(i, a.get(i).substring(a.get(i).indexOf(':')+2));
+        }
         this.a = a;
     }
 
@@ -63,12 +67,19 @@ public class ProcedureDeclaration extends Statement
         return stmts;
     }
 
+    public String getName()
+    {
+        return name.substring(name.indexOf(":") + 2);
+    }
+
     public void compile(Emitter e)
     {
-        e.setProcedureContext(this);
         e.emit("PROC" + name.substring(name.indexOf(":") + 2) + ":");
+        e.emit("li $t2 0");
+        e.emitPush("$t2");
+        e.setProcedureContext(this);
         stmts.compile(e);
-        e.emit("jr $ra");
         e.clearProcedureContext();
+        e.emit("jr $ra");
     }
 }

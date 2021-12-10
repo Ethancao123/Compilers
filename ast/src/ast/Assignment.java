@@ -36,10 +36,19 @@ public class Assignment extends Statement
      */
     public void compile(Emitter e)
     {
+        String varName = var.getName();
         exp.compile(e);
-        e.emit("# assigning a variable");
-        e.emit("la $t0 VAR" + var.getName());
-        e.emit("sw $v0 0($t0)");
+        if(e.isLocalVariable(varName))
+        {
+            e.emit("sw $v0 " + e.getOffset(varName) + "($sp)");
+        }
+        else
+        {
+            e.emit("# assigning a variable");
+            e.emit("la $t0 VAR" + var.getName());
+            e.emit("sw $v0 0($t0)");
+        }
+        
     }
     //TODO: Subroutines Fib
 }
