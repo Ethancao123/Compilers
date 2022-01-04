@@ -16,7 +16,9 @@ public class Variable extends Expression
      */
     public Variable(String n)
     {
-        name = n;
+        if(n.indexOf(':') == -1)
+            name = n;
+        name = n.substring(n.indexOf(':') + 2);
     }
     /**
      * Getter for the name of the variable
@@ -24,9 +26,10 @@ public class Variable extends Expression
      */
     public String getName()
     {
-        if(name.indexOf(':') == -1)
-            return name;
-        return name.substring(name.indexOf(':') + 2);
+        return name;
+        // if(name.indexOf(':') == -1)
+        //     return name;
+        // return name.substring(name.indexOf(':') + 1);
     }
 
     /**

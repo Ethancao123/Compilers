@@ -11,6 +11,7 @@ public class ProcedureDeclaration extends Statement
     private String name;
     private Statement stmts;
     private List<String> a;
+    private List<String> localVar;
 
     /**
      * Constructor for objects of the ProcedureDeclaration class
@@ -29,7 +30,7 @@ public class ProcedureDeclaration extends Statement
      * @param s the statements within the procedure
      * @param a arguments of the procedure
      */
-    public ProcedureDeclaration(String n, Statement s, List<String> a)
+    public ProcedureDeclaration(String n, Statement s, List<String> a, List<String> l)
     {
         name = n;
         stmts = s;
@@ -38,6 +39,7 @@ public class ProcedureDeclaration extends Statement
             a.set(i, a.get(i).substring(a.get(i).indexOf(':')+2));
         }
         this.a = a;
+        localVar = l;
     }
 
     /**
@@ -72,14 +74,27 @@ public class ProcedureDeclaration extends Statement
         return name.substring(name.indexOf(":") + 2);
     }
 
+    public List<String> getLocalVars()
+    {
+        return localVar;
+    }
+
     public void compile(Emitter e)
     {
         e.emit("PROC" + name.substring(name.indexOf(":") + 2) + ":");
         e.emit("li $t2 0");
         e.emitPush("$t2");
+        for(int i = 0; i < localVar.size(); i++)
+        {
+            e.emitPush("$t2");
+        }
         e.setProcedureContext(this);
         stmts.compile(e);
         e.clearProcedureContext();
+        for(int i = 0; i < localVar.size(); i++)
+        {
+            e.emitPop("$t2");
+        }
         e.emit("jr $ra");
     }
 }

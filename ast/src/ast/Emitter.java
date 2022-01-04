@@ -94,15 +94,18 @@ public class Emitter
     {
         if(proc == null)
             return false;
-        if(proc.getName().equals(varName))
-            return true;
-        return proc.getArgs().contains(varName);
+        return proc.getArgs().contains(varName) || proc.getLocalVars().contains(varName)
+            || proc.getName().equals(varName);
     }
 
     public int getOffset(String varName)
     {
         if(proc == null)
             return -1;
-        return excessStackHeight + (proc.getArgs().size() - proc.getArgs().indexOf(varName)) * 4;
+        if(proc.getArgs().contains(varName))
+            return excessStackHeight + (proc.getLocalVars().size() + (proc.getArgs().size() 
+                - proc.getArgs().indexOf(varName))) * 4;
+        return excessStackHeight + (proc.getLocalVars().size() 
+            - proc.getLocalVars().indexOf(varName)) * 4;
     }
 }
