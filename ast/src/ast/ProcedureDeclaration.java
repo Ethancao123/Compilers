@@ -29,6 +29,7 @@ public class ProcedureDeclaration extends Statement
      * @param n the name of the procedure
      * @param s the statements within the procedure
      * @param a arguments of the procedure
+     * @param l the list of local variable of the procedure
      */
     public ProcedureDeclaration(String n, Statement s, List<String> a, List<String> l)
     {
@@ -69,16 +70,28 @@ public class ProcedureDeclaration extends Statement
         return stmts;
     }
 
+    /**
+     * Gets the name of the procedure
+     * @return the name of the procedure
+     */
     public String getName()
     {
         return name.substring(name.indexOf(":") + 2);
     }
 
+    /**
+     * Gets the local variables of the procedure
+     * @return the list of local variables
+     */
     public List<String> getLocalVars()
     {
         return localVar;
     }
 
+    /**
+     * Complies the procedrue declaration
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         e.emit("PROC" + name.substring(name.indexOf(":") + 2) + ":");

@@ -127,6 +127,10 @@ public class Environment
         return parent.hasProcedure(name);
     }
 
+    /**
+     * Compiles the environment
+     * @param e the emitter to write the file
+     */
     public void compile(Emitter e)
     {
         for(Map.Entry<String,ProcedureDeclaration> entry : procedures.entrySet())

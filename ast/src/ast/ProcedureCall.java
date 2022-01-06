@@ -64,6 +64,10 @@ public class ProcedureCall extends Expression
         return 0;
     }
 
+    /**
+     * Compiles the procedure call
+     * @param e the emitter to write the file with
+     */
     public void compile(Emitter e)
     {
         e.emitPush("$ra");
@@ -75,6 +79,7 @@ public class ProcedureCall extends Expression
         e.emit("jal PROC" + name.substring(name.indexOf(":") + 2));
         for(Expression exp : args)
         {
+            exp.getClass();
             e.emitPop("$t1");
         }
         e.emitPop("$ra");
