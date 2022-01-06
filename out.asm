@@ -78,28 +78,23 @@ PROCprintSquares:
 	# block of statements
 	# evaluates a variable
 	lw $v0 16($sp)
-	# assigning a variable
-	la $t0 VARcount
-	sw $v0 0($t0)
+	sw $v0 8($sp)
 	# while loop
 	# evaluates a variable
 	lw $v0 12($sp)
 	move $t1 $v0
 	# evaluates a variable
-	la $t0 VARcount
-	lw $v0 0($t0)
+	lw $v0 8($sp)
 	bgt $v0 $t1 whileEnd0
 whileBegin1:
 	# block of statements
 	# binary operation
 	# evaluates a variable
-	la $t0 VARcount
-	lw $v0 0($t0)
+	lw $v0 8($sp)
 	subu $sp $sp 4
 	sw $v0 ($sp)
 	# evaluates a variable
-	la $t0 VARcount
-	lw $v0 0($t0)
+	lw $v0 12($sp)
 	lw $t0 ($sp)
 	addu $sp $sp 4
 	mult $v0 $t0
@@ -116,8 +111,7 @@ whileBegin1:
 	syscall
 	# binary operation
 	# evaluates a variable
-	la $t0 VARcount
-	lw $v0 0($t0)
+	lw $v0 8($sp)
 	subu $sp $sp 4
 	sw $v0 ($sp)
 	# loading number
@@ -125,9 +119,7 @@ whileBegin1:
 	lw $t0 ($sp)
 	addu $sp $sp 4
 	addu $v0 $v0 $t0
-	# assigning a variable
-	la $t0 VARcount
-	sw $v0 0($t0)
+	sw $v0 8($sp)
 	# binary operation
 	# evaluates a variable
 	la $t0 VARtimes
@@ -146,8 +138,7 @@ whileBegin1:
 	lw $v0 12($sp)
 	move $t1 $v0
 	# evaluates a variable
-	la $t0 VARcount
-	lw $v0 0($t0)
+	lw $v0 8($sp)
 	ble $v0 $t1 whileBegin1
 whileEnd0:
 	lw $t2 ($sp)

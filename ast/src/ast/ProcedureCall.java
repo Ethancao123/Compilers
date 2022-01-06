@@ -40,6 +40,7 @@ public class ProcedureCall extends Expression
     {
         List<String> argsList = env.getProcedure(name).getArgs();
         Statement stmts = env.getProcedure(name).getStmts();
+        List<String> localvars = env.getProcedure(name).getLocalVars();
         Environment subEnv = new Environment(env);
         if(args != null)
         {
@@ -49,12 +50,15 @@ public class ProcedureCall extends Expression
             {
                 subEnv.declareVariable(argsList.get(i), args.get(i).eval(env));
             }
-            stmts.exec(subEnv);
         }
-        else
+        if(localvars != null)
         {
-            stmts.exec(new Environment(env));
+            for(int i = 0; i < localvars.size(); i++)
+            {
+                subEnv.declareVariable(localvars.get(i), 0);
+            }
         }
+        stmts.exec(subEnv);
         if(subEnv != null && subEnv.hasVariable(name))
             return subEnv.getVariable(name);
         return 0;

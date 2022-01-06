@@ -76,7 +76,7 @@ public class Parser
             if(currentToken.equals("ID : VAR"))
             {
                 eat(currentToken);
-                localVars.add(currentToken);
+                localVars.add(currentToken.substring(currentToken.indexOf(":") + 2));
                 eat(currentToken);
                 while(currentToken.equals("SEP : ,"))
                 {
