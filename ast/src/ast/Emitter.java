@@ -79,30 +79,50 @@ public class Emitter
         return nextLabel++;
     }
 
+    /**
+     * Sets the procedure context
+     * @param procedure the procedure to set the context to
+     */
     public void setProcedureContext(ProcedureDeclaration procedure)
     {
         proc = procedure;
         excessStackHeight = 0;
     }
 
+    /**
+     * Resets the procedure context to null
+     */
     public void clearProcedureContext()
     {
         proc = null;
     }
 
+    /**
+     * Checks if a variable is a local variable
+     * @param varName The name of the variable to check
+     * @return true if the variable is a local variable; Otherwise, false
+     */
     public boolean isLocalVariable(String varName)
     {
         if(proc == null)
             return false;
-        if(proc.getName().equals(varName))
-            return true;
-        return proc.getArgs().contains(varName);
+        return proc.getArgs().contains(varName) || proc.getLocalVars().contains(varName)
+            || proc.getName().equals(varName);
     }
 
+    /**
+     * Gets the stack offset for a variable
+     * @param varName the variable to get the stack offset for
+     * @return the stack offset of varName
+     */
     public int getOffset(String varName)
     {
         if(proc == null)
             return -1;
-        return excessStackHeight + (proc.getArgs().size() - proc.getArgs().indexOf(varName)) * 4;
+        if(proc.getArgs().contains(varName))
+            return excessStackHeight + (proc.getLocalVars().size() + (proc.getArgs().size() 
+                - proc.getArgs().indexOf(varName))) * 4;
+        return excessStackHeight + (proc.getLocalVars().size() 
+            - proc.getLocalVars().indexOf(varName)) * 4;
     }
 }

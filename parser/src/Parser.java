@@ -37,12 +37,12 @@ public class Parser
         while(currentToken.equals("ID : VAR"))
         {
             eat(currentToken);
-            vars.add(new Variable(currentToken.substring(5)));
+            vars.add(new Variable(currentToken.substring(currentToken.indexOf(":") + 1)));
             eat(currentToken);
             while(currentToken.equals("SEP : ,"))
             {
                 eat(currentToken);
-                vars.add(new Variable(currentToken.substring(5)));
+                vars.add(new Variable(currentToken.substring(currentToken.indexOf(":") + 1)));
                 eat(currentToken);
             }
             eat("SEP : ;");
@@ -53,16 +53,15 @@ public class Parser
             String id = currentToken;
             eat(currentToken);
             eat("SEP : (");
+            ArrayList<String> params = new ArrayList<String>();
+            ArrayList<String> localVars = new ArrayList<String>();
             if(currentToken.equals("SEP : )"))
             {
                 eat("SEP : )");
                 eat("SEP : ;");
-                Statement stmts = parseStatement();
-                env.setProcedure(id, new ProcedureDeclaration(id, stmts));
             }
             else
-            {
-                ArrayList<String> params = new ArrayList<String>();
+            { 
                 params.add(currentToken);
                 eat(currentToken);
                 while(currentToken.equals("SEP : ,"))
@@ -73,9 +72,22 @@ public class Parser
                 }
                 eat("SEP : )");
                 eat("SEP : ;");
-                Statement stmts = parseStatement();
-                env.setProcedure(id, new ProcedureDeclaration(id, stmts, params));
             }
+            if(currentToken.equals("ID : VAR"))
+            {
+                eat(currentToken);
+                localVars.add(currentToken.substring(currentToken.indexOf(":") + 2));
+                eat(currentToken);
+                while(currentToken.equals("SEP : ,"))
+                {
+                    eat(currentToken);
+                    localVars.add(currentToken.substring(currentToken.indexOf(":") + 2));
+                    eat(currentToken);
+                }
+                eat("SEP : ;");
+            }
+            Statement stmts = parseStatement();
+            env.setProcedure(id, new ProcedureDeclaration(id, stmts, params, localVars));
         }
         return new Program(env, parseStatement(), vars);
     }
