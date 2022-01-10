@@ -8,14 +8,17 @@ package ast;
 public class Writeln extends Statement
 {
     private Expression exp;
+    private Variable input;
 
     /**
      * Constructor for objects of the Writeln class
      * @param exp the expression to write to the terminal
+     * @param var the value of the user input
      */
-    public Writeln(Expression exp)
+    public Writeln(Expression exp, Variable var)
     {
         this.exp = exp;
+        input = var;
     }
 
     /**
@@ -25,6 +28,7 @@ public class Writeln extends Statement
     public void exec(Environment env)
     {
         System.out.println(exp.eval(env));
+        //TODO: ask user for input and assign input
     }
 
     /**

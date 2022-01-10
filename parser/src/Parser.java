@@ -33,63 +33,41 @@ public class Parser
      */
     public Program parseProgram() throws ScanErrorException
     {
-        ArrayList<Variable> vars = new ArrayList<Variable>();
-        while(currentToken.equals("ID : VAR"))
+        return new Program(env, parseStatement(), null);
+    }
+
+    /**
+     * Parses a WRITELN Statement and prints the number being written
+     * @precondition current token is a statement
+     * @postcondition statement token has been eaten
+     * @throws ScanErrorException when an illegal character is scanned
+     * @return a Statement object
+     */
+    public Statement parseStatement() throws ScanErrorException
+    {
+        ////System.out.println("parsing statement");
+        Statement returned = null;
+        if(currentToken.equals("ID : display"))
         {
             eat(currentToken);
-            vars.add(new Variable(currentToken.substring(currentToken.indexOf(":") + 1)));
-            eat(currentToken);
-            while(currentToken.equals("SEP : ,"))
+            Expression exp = parseExpression();
+            String id;
+            if(currentToken.equals("ID : read"))
             {
                 eat(currentToken);
-                vars.add(new Variable(currentToken.substring(currentToken.indexOf(":") + 1)));
-                eat(currentToken);
+                id = nextInt();
             }
-            eat("SEP : ;");
+            return new Writeln(exp, id);
         }
-        while(currentToken.equals("ID : PROCEDURE"))
-        {
-            eat("ID : PROCEDURE");
-            String id = currentToken;
-            eat(currentToken);
-            eat("SEP : (");
-            ArrayList<String> params = new ArrayList<String>();
-            ArrayList<String> localVars = new ArrayList<String>();
-            if(currentToken.equals("SEP : )"))
-            {
-                eat("SEP : )");
-                eat("SEP : ;");
-            }
-            else
-            { 
-                params.add(currentToken);
-                eat(currentToken);
-                while(currentToken.equals("SEP : ,"))
-                {
-                    eat("SEP : ,");
-                    params.add(currentToken);
-                    eat(currentToken);
-                }
-                eat("SEP : )");
-                eat("SEP : ;");
-            }
-            if(currentToken.equals("ID : VAR"))
-            {
-                eat(currentToken);
-                localVars.add(currentToken.substring(currentToken.indexOf(":") + 2));
-                eat(currentToken);
-                while(currentToken.equals("SEP : ,"))
-                {
-                    eat(currentToken);
-                    localVars.add(currentToken.substring(currentToken.indexOf(":") + 2));
-                    eat(currentToken);
-                }
-                eat("SEP : ;");
-            }
-            Statement stmts = parseStatement();
-            env.setProcedure(id, new ProcedureDeclaration(id, stmts, params, localVars));
-        }
-        return new Program(env, parseStatement(), vars);
+        else if (currentToken.equals("ID : assign"))
+            parseAssignment();
+        else if(currentToken.equals("ID : while"))
+            returned = parseWhile();
+        else if(currentToken.equals("ID : if"))
+            returned = parseIf();
+        else
+            throw new ScanErrorException("Invalid statement parse");
+        return returned;
     }
 
     /**
@@ -191,50 +169,6 @@ public class Parser
         eat(currentToken);
         //System.out.println("parsed number " + num);
         return new Number(num);
-    }
-
-    /**
-     * Parses a WRITELN Statement and prints the number being written
-     * @precondition current token is a statement
-     * @postcondition statement token has been eaten
-     * @throws ScanErrorException when an illegal character is scanned
-     * @return a Statement object
-     */
-    public Statement parseStatement() throws ScanErrorException
-    {
-        ////System.out.println("parsing statement");
-        Statement returned = null;
-        if(currentToken.equals("ID : BEGIN"))
-        {
-            eat("ID : BEGIN");
-            //System.out.println("parsing block");
-            ArrayList<Statement> stmts = new ArrayList<Statement>();
-            while(!currentToken.equals("ID : END")) 
-            {
-                stmts.add(parseStatement());
-            }
-            eat("ID : END");
-            eat("SEP : ;");
-            returned = new Block(stmts);
-        } 
-        else if (currentToken.equals("ID : WRITELN"))
-        {
-            eat("ID : WRITELN");
-            eat("SEP : (");
-            Expression exp = parseExpression();
-            eat("SEP : )");
-            eat("SEP : ;");
-            returned = new Writeln(exp);
-        }
-        else if(currentToken.equals("ID : IF"))
-            returned = parseIf();
-        else if(currentToken.equals("ID : WHILE"))
-            returned = parseWhile();
-        else if(!currentToken.equals("ID : END") && currentToken.substring(0,2).equals("ID"))
-            returned = parseAssignment();
-        else
-            throw new ScanErrorException("Invalid statement parse");
-        return returned;
     }
 
     /**
