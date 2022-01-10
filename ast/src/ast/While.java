@@ -32,20 +32,4 @@ public class While extends Statement
             stmt.exec(env);
         }
     }
-
-    /**
-     * Compiles a while loop
-     * @param e the emitter to write the file
-     */
-    public void compile(Emitter e)
-    {
-        e.emit("# while loop");
-        String endTag = "whileEnd" + e.nextLabelID();
-        String beginTag = "whileBegin" + e.nextLabelID();
-        cond.compile(e, endTag);
-        e.emit(beginTag + ":");
-        stmt.compile(e);
-        cond.compileInverse(e, beginTag);
-        e.emit(endTag + ":");
-    }
 }

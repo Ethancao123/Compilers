@@ -29,26 +29,5 @@ public class Assignment extends Statement
     {
         env.setVariable(var.getName(), exp.eval(env));
     }
-
-    /**
-     * Compiles the variable assignment
-     * @param e the emitter to write the file
-     */
-    public void compile(Emitter e)
-    {
-        String varName = var.getName();
-        exp.compile(e);
-        if(e.isLocalVariable(varName))
-        {
-            e.emit("sw $v0 " + e.getOffset(varName) + "($sp)");
-        }
-        else
-        {
-            e.emit("# assigning a variable");
-            e.emit("la $t0 VAR" + var.getName());
-            e.emit("sw $v0 0($t0)");
-        }
-        
-    }
 }
        

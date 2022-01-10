@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.Scanner;
+
 /**
  * Class for Writeln statements in a Pascal compiler
  * @author Ethan Cao
@@ -8,14 +10,14 @@ package ast;
 public class Writeln extends Statement
 {
     private Expression exp;
-    private Variable input;
+    private String input;
 
     /**
      * Constructor for objects of the Writeln class
      * @param exp the expression to write to the terminal
      * @param var the value of the user input
      */
-    public Writeln(Expression exp, Variable var)
+    public Writeln(Expression exp, String var)
     {
         this.exp = exp;
         input = var;
@@ -28,23 +30,10 @@ public class Writeln extends Statement
     public void exec(Environment env)
     {
         System.out.println(exp.eval(env));
-        //TODO: ask user for input and assign input
-    }
-
-    /**
-     * Compiles a print statement
-     * @param e the emitter to write the file
-     */
-    public void compile(Emitter e)
-    {
-        e.emit("# print statement");
-        exp.compile(e);
-        e.emit("move $a0 $v0");
-        e.emit("li $v0 1");
-        e.emit("syscall");
-        //make new line
-        e.emit("li $v0 4");
-        e.emit("la $a0 newLine");
-        e.emit("syscall");
+        Scanner sc = new Scanner(System.in);
+        int in = sc.nextInt();
+        sc.close();
+        Assignment a = new Assignment(input, new Number(in));
+        a.exec(env);
     }
 }

@@ -52,36 +52,4 @@ public class BinOp extends Expression
                 throw new IllegalArgumentException(op + " is not an operator");
         }
     }
-
-    /**
-     * Compiles the binary operation
-     * @param e the emitter to write the file
-     */
-    public void compile(Emitter e)
-    {
-        e.emit("# binary operation");
-        exp1.compile(e);
-        e.emitPush("$v0");
-        exp2.compile(e);
-        e.emitPop("$t0");
-        switch(op)
-        {
-            case "*":
-                e.emit("mult $v0 $t0");
-                e.emit("mflo $v0");
-                break;
-            case "/":
-                e.emit("div $t0 $v0");
-                e.emit("mflo $v0");
-                break;
-            case "+":
-                e.emit("addu $v0 $v0 $t0");
-                break;
-            case "-":
-                e.emit("subu $v0 $t0 $v0");
-                break;
-            default:
-                throw new IllegalArgumentException(op + " is not an operator");
-        }
-    }
 }

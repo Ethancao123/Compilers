@@ -13,13 +13,4 @@ public abstract class Expression
      * @return the value of the expression
      */
     public abstract int eval(Environment env);
-
-    /**
-     * Complies the statemet
-     * @param e Emitter which writes the MIPS code to a file
-     */
-    public void compile(Emitter e)
-    {
-        throw new RuntimeException("Code not implemented");
-    }
 }

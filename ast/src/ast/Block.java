@@ -28,15 +28,4 @@ public class Block extends Statement
         for(int i = 0; i < stmts.size(); i++)
             stmts.get(i).exec(env);
     }
-
-    /**
-     * Compiles the block of statements
-     * @param e the emitter to write the file
-     */
-    public void compile(Emitter e)
-    {
-        e.emit("# block of statements");
-        for(int i = 0; i < stmts.size(); i++)
-            stmts.get(i).compile(e);
-    }
 }

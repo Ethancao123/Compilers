@@ -32,17 +32,4 @@ public class If extends Statement
             stmt.exec(env);
         }
     }
-
-    /**
-     * Compiles an if statement
-     * @param e the emitter to write the file
-     */
-    public void compile(Emitter e)
-    {
-        e.emit("# if statement");
-        String tag = "endif" + e.nextLabelID();
-        cond.compile(e, tag);
-        stmt.compile(e);
-        e.emit(tag + ":");
-    }
 }

@@ -11,8 +11,6 @@ public class Environment
 {
 
     private Map<String, Integer> variables = new HashMap<String, Integer>();
-    private Map<String, ProcedureDeclaration> procedures 
-            = new HashMap<String, ProcedureDeclaration>();
     private Environment parent;
 
     /**
@@ -58,6 +56,7 @@ public class Environment
     {
         variables.put(variable, value);
     }
+
     /**
      * Getter for variables in the Environment
      * @param variable name of the variable to get from the environment
@@ -80,60 +79,5 @@ public class Environment
     public boolean hasVariable(String var)
     {
         return variables.get(var) != null;
-    }
-
-    /**
-     * Adds a procedure to the environment
-     * @param name the name of the procedure
-     * @param stmts the ProcedureDeclarations within the procedure
-     */
-    public void setProcedure(String name, ProcedureDeclaration stmts)
-    {
-        if(parent == null)
-        {
-            procedures.put(name, stmts);
-        }
-        else
-        {
-            parent.setProcedure(name, stmts);
-        }
-    }
-
-    /**
-     * Gets a procedure from the environment
-     * @param name the name of the procedure
-     * @return the procedure with name
-     */
-    public ProcedureDeclaration getProcedure(String name)
-    {
-        if(parent == null)
-        {
-            return procedures.get(name);
-        }
-        return parent.getProcedure(name);
-    }
-
-    /**
-     * Checks if a procedure exists within the environment
-     * @param name The name of the procedure
-     * @return True if the procedure has been declared; Otherwise, false
-     */
-    public boolean hasProcedure(String name)
-    {
-        if(parent == null)
-        {
-            return procedures.get(name) != null;
-        }
-        return parent.hasProcedure(name);
-    }
-
-    /**
-     * Compiles the environment
-     * @param e the emitter to write the file
-     */
-    public void compile(Emitter e)
-    {
-        for(Map.Entry<String,ProcedureDeclaration> entry : procedures.entrySet())
-            entry.getValue().compile(e);
     }
 }
