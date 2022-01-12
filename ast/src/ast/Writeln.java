@@ -30,7 +30,7 @@ public class Writeln extends Statement
     public void exec(Environment env)
     {
         System.out.println(exp.eval(env));
-        if(input != null)
+        if(input != null && !input.equals(""))
         {
             Scanner sc = new Scanner(System.in);
             int in = sc.nextInt();

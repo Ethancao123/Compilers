@@ -32,6 +32,8 @@ public class Condition extends Expression
     public int eval(Environment env)
     {
         int result1 = exp1.eval(env);
+        if(relop == null)
+            return result1;
         int result2 = exp2.eval(env);
         boolean returned;
         switch(relop)

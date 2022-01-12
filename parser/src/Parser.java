@@ -76,6 +76,11 @@ public class Parser
         return returned;
     }
 
+    /**
+     * Parses a block of statements
+     * @return the parsed block of statements
+     * @throws ScanErrorException when an illegal token is scanned
+     */
     public Statement parseBlock() throws ScanErrorException
     {
         ArrayList<Statement> stmts = new ArrayList<Statement>();
@@ -125,38 +130,22 @@ public class Parser
      */
     private Statement parseIf() throws ScanErrorException
     { 
-        ////System.out.println("parsing if");
         eat("ID : if"); 
-        Condition c = parseCondition();
+        Expression c = parseExpression();
         eat("ID : then");
-        //System.out.println("parsed if");
-        Statement statement = parseBlock();
+        ArrayList<Statement> stmts = new ArrayList<Statement>();
+        while(!currentToken.equals("ID : end") && !currentToken.equals("ID : else"))
+        {
+            stmts.add(parseStatement());
+        }
         Statement elseStatement = null;
         if(currentToken.equals("ID : else"))
-            elseStatement = parseBlock();
-        eat("ID : end");
-        return new If(statement, c, elseStatement);
-    }
-
-    /**
-     * Parses a conditional statement
-     * @precondition current token is an expression
-     * @postcondition all tokens in the conditional have been eaten
-     * @return the conditional statement
-     * @throws ScanErrorException when an illegal character is scanned
-     */
-    private Condition parseCondition() throws ScanErrorException
-    {
-        Expression e1 = parseExpression(); //TODO: Doesn't work with equals and ()
-        String r = currentToken;
-        eat(currentToken);
-        if(currentToken.equals("SEP : >") || currentToken.equals("SEP : ="))
         {
-            r += currentToken.substring(currentToken.indexOf(":") + 2);
             eat(currentToken);
+            elseStatement = parseBlock();
         }
-        Expression e2 = parseExpression();
-        return new Condition(e1, r, e2);
+        eat("ID : end");
+        return new If(new Block(stmts), c, elseStatement);
     }
 
     /**
@@ -168,90 +157,14 @@ public class Parser
     {
         ////System.out.println("parsing while");
         eat("ID : while"); 
-        Condition c = parseCondition();
+        Expression c = parseExpression();
         eat("ID : do");
         //System.out.println("parsed while");
         Statement returned = new While(parseBlock(), c);
         eat("ID : end");
         return returned;
     }
-
-    /**
-     * Parses a number
-     * @precondition current token is an integer
-     * @postcondition number token has been eaten
-     * @return the value of the parsed integer
-     * @throws ScanErrorException when an illegal character is scanned
-     */
-    private Number parseNumber() throws ScanErrorException
-    {
-        //System.out.println("parsing number");
-        int num = Integer.parseInt(currentToken.substring(6)); //removes prefix
-        eat(currentToken);
-        //System.out.println("parsed number " + num);
-        return new Number(num);
-    }
-
-    /**
-     * Parses a factor
-     * @precondition current token is a factor
-     * @postcondition factor token has been eaten
-     * @return the value of the factor
-     * @throws ScanErrorException when an illegal character is scanned
-     */
-    public Expression parseFactor() throws ScanErrorException
-    {
-        Expression returned = null;
-        if(currentToken.substring(0,3).equals("NUM"))
-        {
-            returned = parseNumber();
-        }
-        else if(currentToken.equals("SEP : ("))
-        {
-            eat(currentToken);
-            returned = parseExpression();
-            eat("SEP : )");
-        }
-        else if(currentToken.equals("SEP : -"))
-        {
-            eat(currentToken);
-            returned = new BinOp("*", parseFactor(), new Number(-1));
-        }
-        else if(currentToken.substring(0,2).equals("ID"))
-        {
-            returned = new Variable(currentToken);
-            eat(currentToken);
-        }
-        //System.out.println("parsed factor");
-        return returned;
-    }
-
-    /**
-     * Parses a term 
-     * @precondition the current token is a term
-     * @postcondition term tokens have been eaten
-     * @return the result of the term SEP
-     * @throws ScanErrorException when an illegal character is scanned
-     */
-    public Expression parseTerm() throws ScanErrorException
-    {
-        //System.out.println("parsing term");
-        Expression exp1 = parseFactor();
-        while(currentToken.equals("SEP : *") || currentToken.equals("SEP : /"))
-        {
-            if(currentToken.equals("SEP : *"))
-            {
-                eat("SEP : *");
-                exp1 = new BinOp("*", exp1, parseFactor());
-            }
-            else if(currentToken.equals("SEP : /"))
-            {
-                eat("SEP : /");
-                exp1 = new BinOp("/", exp1, parseFactor());
-            }
-        }
-        return exp1;
-    }
+    //TODO: Fix all documentation
 
     /**
      * Parses an Expression 
@@ -262,28 +175,116 @@ public class Parser
      */
     public Expression parseExpression() throws ScanErrorException
     {
-        //System.out.println("parsing expression");
-        Expression exp1 = parseTerm();
+        Expression exp1 = parseAddExpr();
+        Expression exp2 = null;
+        String c = null;
+        while(currentToken.equals("SEP : <") || currentToken.equals("SEP : >") || 
+                currentToken.equals("SEP : >=") || currentToken.equals("SEP : <=") || 
+                currentToken.equals("SEP : <>") || currentToken.equals("SEP : ="))
+        {
+            c = currentToken;
+            eat(currentToken);
+            exp2 = parseAddExpr();
+        }
+        return new Condition(exp1, c, exp2);
+    }
+
+    /**
+     * Parses a addition statement
+     * @precondition the current token is a term
+     * @postcondition term tokens have been eaten
+     * @return the result of the term SEP
+     * @throws ScanErrorException when an illegal character is scanned
+     */
+    public Expression parseAddExpr() throws ScanErrorException
+    {
+        Expression exp1 = parseMultExpr();
         while(currentToken.equals("SEP : +") || currentToken.equals("SEP : -"))
         {
             if(currentToken.equals("SEP : +"))
             {
                 eat("SEP : +");
-                exp1 = new BinOp("+", exp1, parseTerm());
+                exp1 = new BinOp("+", exp1, parseAddExpr());
             }
             else if(currentToken.equals("SEP : -"))
             {
                 eat("SEP : -");
-                exp1 = new BinOp("-", exp1, parseTerm());
+                exp1 = new BinOp("-", exp1, parseAddExpr());
             }
         }
-        if(currentToken.equals("SEP : ="))
+        return exp1;
+    }
+
+    /**
+     * Parses a multiplication statement
+     * @precondition current token is a factor
+     * @postcondition factor token has been eaten
+     * @return the value of the factor
+     * @throws ScanErrorException when an illegal character is scanned
+     */
+    public Expression parseMultExpr() throws ScanErrorException
+    {
+        Expression exp1 = parseNegExpr();
+        while(currentToken.equals("SEP : *") || currentToken.equals("SEP : /"))
         {
-            eat(currentToken);
-            Expression exp2 = parseExpression();
-            return new Condition(exp1, "=", exp2);
+            if(currentToken.equals("SEP : *"))
+            {
+                eat("SEP : *");
+                exp1 = new BinOp("*", exp1, parseNegExpr());
+            }
+            else if(currentToken.equals("SEP : /"))
+            {
+                eat("SEP : /");
+                exp1 = new BinOp("/", exp1, parseNegExpr());
+            }
         }
         return exp1;
+    }
+
+    /**
+     * Parses a number's sign
+     * @return a parsed sign
+     * @throws ScanErrorException if an illegal character is scanned
+     */
+    public Expression parseNegExpr() throws ScanErrorException
+    {
+        if(currentToken.equals("SEP : -"))
+        {
+            eat(currentToken);
+            return new BinOp("*", parseValue(), new Number(-1));
+        }
+        return parseValue();
+    }
+
+    /**
+     * Parses a value
+     * @precondition current token is an integer
+     * @postcondition number token has been eaten
+     * @return the value of the parsed integer
+     * @throws ScanErrorException when an illegal character is scanned
+     */
+    private Expression parseValue() throws ScanErrorException
+    {
+        Expression returned = null;
+        if(currentToken.substring(0,3).equals("NUM"))
+        {
+            int num = Integer.parseInt(currentToken.substring(6));
+            eat(currentToken);
+            returned = new Number(num);
+        }
+        else if(currentToken.equals("SEP : ("))
+        {
+            eat(currentToken);
+            returned = parseExpression();
+            eat("SEP : )");
+        }
+        else if(currentToken.substring(0,2).equals("ID"))
+        {
+            returned = new Variable(currentToken);
+            eat(currentToken);
+        }
+        return returned;
+
     }
 
     /**

@@ -8,7 +8,7 @@ package ast;
 public class If extends Statement
 {
     private Statement stmt;
-    private Condition cond;
+    private Expression cond;
     private Statement elseStmt;
     
     /**
@@ -17,7 +17,7 @@ public class If extends Statement
      * @param c the condition that must be fufilled
      * @param es the statement to execute if condition is false
      */
-    public If(Statement s, Condition c, Statement es)
+    public If(Statement s, Expression c, Statement es)
     {
         stmt = s;
         cond = c;
@@ -30,10 +30,13 @@ public class If extends Statement
      */
     public void exec(Environment env)
     {
-        if(cond.eval(env) == 1)
+        if(cond.eval(env) != 0)
         {
             stmt.exec(env);
         }
-        //TODO: Add else stuffs
+        else
+        {
+            elseStmt.exec(env);
+        }
     }
 }

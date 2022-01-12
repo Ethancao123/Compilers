@@ -68,7 +68,7 @@ public class Environment
             return variables.get(variable);
         if(parent != null)
             return parent.getVariable(variable);
-        throw new IllegalArgumentException("Variable does not exist in environment");
+        throw new IllegalArgumentException("Variable " + variable + " does not exist in environment");
     }
 
     /**

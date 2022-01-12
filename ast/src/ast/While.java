@@ -8,14 +8,14 @@ package ast;
 public class While extends Statement
 {
     Statement stmt;
-    Condition cond;
+    Expression cond;
 
     /**
      * Constructor for objects of the While class
      * @param s the statement to execute in the loop
      * @param c the condition to execute the loop under
      */
-    public While(Statement s, Condition c)
+    public While(Statement s, Expression c)
     {
         stmt = s;
         cond = c;
@@ -27,7 +27,7 @@ public class While extends Statement
      */
     public void exec(Environment env)
     {
-        while(cond.eval(env) == 1)
+        while(cond.eval(env) != 0)
         {
             stmt.exec(env);
         }
