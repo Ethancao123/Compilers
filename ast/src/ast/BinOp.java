@@ -36,6 +36,7 @@ public class BinOp extends Expression
         //System.out.println(op);
         int result1 = exp1.eval(env);
         int result2 = exp2.eval(env);
+        boolean returned;
         switch(op)
         {
             case "*":
@@ -48,8 +49,29 @@ public class BinOp extends Expression
                 return result1 - result2;
             case "%":
                 return result1 % result2;
+            case "SEP : =":
+                returned = result1 == result2;
+                break;
+            case "SEP : <>":
+                returned = result1 != result2;
+                break;
+            case "SEP : <":
+                returned = result1 < result2;
+                break;
+            case "SEP : >":
+                returned = result1 > result2;
+                break;
+            case "SEP : <=":
+                returned = result1 <= result2;
+                break;
+            case "SEP : >=":
+                returned = result1 >= result2;
+                break;
             default:
                 throw new IllegalArgumentException(op + " is not an operator");
         }
+        if(returned)
+            return 1;
+        return 0;
     }
 }

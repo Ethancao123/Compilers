@@ -185,8 +185,9 @@ public class Parser
             c = currentToken;
             eat(currentToken);
             exp2 = parseAddExpr();
+            exp1 = new BinOp(c, exp1, exp2);
         }
-        return new Condition(exp1, c, exp2);
+        return exp1;
     }
 
     /**

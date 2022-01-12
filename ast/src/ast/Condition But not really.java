@@ -5,7 +5,7 @@ package ast;
  * @author Ethan Cao
  * @version 10/25/21 
  */
-public class Condition extends Expression
+public class Conditionasdfasdfasdfff extends Expression
 {
     String relop;
     Expression exp1;
@@ -17,7 +17,7 @@ public class Condition extends Expression
      * @param r the relative operator of the conditional statement
      * @param e2 the second expression in the conditional statement
      */
-    public Condition(Expression e1, String r, Expression e2)
+    public Conditionghfgfkygfh(Expression e1, String r, Expression e2)
     {
         relop = r;
         exp1 = e1;

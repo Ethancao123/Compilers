@@ -32,6 +32,7 @@ public class Writeln extends Statement
         System.out.println(exp.eval(env));
         if(input != null && !input.equals(""))
         {
+            System.out.print("input an int: ");
             Scanner sc = new Scanner(System.in);
             int in = sc.nextInt();
             sc.close();

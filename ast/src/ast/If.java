@@ -34,7 +34,7 @@ public class If extends Statement
         {
             stmt.exec(env);
         }
-        else
+        else if(elseStmt != null)
         {
             elseStmt.exec(env);
         }

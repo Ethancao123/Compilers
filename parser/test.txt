@@ -1,2 +1,0 @@
-assign x = 7
-display x < 5 > 3
