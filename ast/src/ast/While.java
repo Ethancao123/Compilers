@@ -27,7 +27,7 @@ public class While extends Statement
      */
     public void exec(Environment env)
     {
-        while(cond.eval(env))
+        while(cond.eval(env) == 1)
         {
             stmt.exec(env);
         }

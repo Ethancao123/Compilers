@@ -33,7 +33,12 @@ public class Parser
      */
     public Program parseProgram() throws ScanErrorException
     {
-        return new Program(env, parseStatement(), null);
+        List<Statement> stmts = new ArrayList<Statement>();
+        while(scanner.hasNext())
+        {
+            stmts.add(parseStatement());
+        }
+        return new Program(env, new Block(stmts));
     }
 
     /**
@@ -51,16 +56,17 @@ public class Parser
         {
             eat(currentToken);
             Expression exp = parseExpression();
-            String id;
+            String id = "";
             if(currentToken.equals("ID : read"))
             {
                 eat(currentToken);
-                id = nextInt();
+                id = currentToken.substring(currentToken.indexOf(":") + 2);
+                eat(currentToken);
             }
-            return new Writeln(exp, id);
+            returned = new Writeln(exp, id);
         }
         else if (currentToken.equals("ID : assign"))
-            parseAssignment();
+            returned = parseAssignment();
         else if(currentToken.equals("ID : while"))
             returned = parseWhile();
         else if(currentToken.equals("ID : if"))
@@ -68,6 +74,16 @@ public class Parser
         else
             throw new ScanErrorException("Invalid statement parse");
         return returned;
+    }
+
+    public Statement parseBlock() throws ScanErrorException
+    {
+        ArrayList<Statement> stmts = new ArrayList<Statement>();
+        while(!currentToken.equals("ID : end"))
+        {
+            stmts.add(parseStatement());
+        }
+        return new Block(stmts);
     }
 
     /**
@@ -110,11 +126,16 @@ public class Parser
     private Statement parseIf() throws ScanErrorException
     { 
         ////System.out.println("parsing if");
-        eat("ID : IF"); 
+        eat("ID : if"); 
         Condition c = parseCondition();
-        eat("ID : THEN");
+        eat("ID : then");
         //System.out.println("parsed if");
-        return new If(parseStatement(), c);
+        Statement statement = parseBlock();
+        Statement elseStatement = null;
+        if(currentToken.equals("ID : else"))
+            elseStatement = parseBlock();
+        eat("ID : end");
+        return new If(statement, c, elseStatement);
     }
 
     /**
@@ -126,8 +147,7 @@ public class Parser
      */
     private Condition parseCondition() throws ScanErrorException
     {
-        ////System.out.println("parsing condition");
-        Expression e1 = parseExpression();
+        Expression e1 = parseExpression(); //TODO: Doesn't work with equals and ()
         String r = currentToken;
         eat(currentToken);
         if(currentToken.equals("SEP : >") || currentToken.equals("SEP : ="))
@@ -136,7 +156,6 @@ public class Parser
             eat(currentToken);
         }
         Expression e2 = parseExpression();
-        //System.out.println("parsed condition");
         return new Condition(e1, r, e2);
     }
 
@@ -148,11 +167,13 @@ public class Parser
     private Statement parseWhile() throws ScanErrorException
     {
         ////System.out.println("parsing while");
-        eat("ID : WHILE"); 
+        eat("ID : while"); 
         Condition c = parseCondition();
-        eat("ID : DO");
+        eat("ID : do");
         //System.out.println("parsed while");
-        return new While(parseStatement(), c);
+        Statement returned = new While(parseBlock(), c);
+        eat("ID : end");
+        return returned;
     }
 
     /**
@@ -180,9 +201,6 @@ public class Parser
      */
     public Expression parseFactor() throws ScanErrorException
     {
-        String pastToken;
-        //System.out.println("parsing factor");
-        ////System.out.println("parsing factor");
         Expression returned = null;
         if(currentToken.substring(0,3).equals("NUM"))
         {
@@ -201,36 +219,9 @@ public class Parser
         }
         else if(currentToken.substring(0,2).equals("ID"))
         {
-            pastToken = currentToken;
+            returned = new Variable(currentToken);
             eat(currentToken);
-            if(currentToken.equals("SEP : ("))
-            {
-                eat("SEP : (");
-                if(currentToken.equals("SEP : )"))
-                {
-                    returned = new ProcedureCall(pastToken);
-                    eat("SEP : )");
-                }
-                else
-                {
-                    ArrayList<Expression> args = new ArrayList<Expression>();
-                    args.add(parseExpression());
-                    while (currentToken.equals("SEP : ,"))
-                    {
-                        eat("SEP : ,");
-                        args.add(parseExpression());
-                    }
-                    eat("SEP : )");
-                    returned = new ProcedureCall(pastToken, args);
-                }
-            }
-            else
-            {
-                returned = new Variable(pastToken);
-            }
         }
-        else
-            eat("SEP : ;");
         //System.out.println("parsed factor");
         return returned;
     }
@@ -286,6 +277,12 @@ public class Parser
                 exp1 = new BinOp("-", exp1, parseTerm());
             }
         }
+        if(currentToken.equals("SEP : ="))
+        {
+            eat(currentToken);
+            Expression exp2 = parseExpression();
+            return new Condition(exp1, "=", exp2);
+        }
         return exp1;
     }
 
@@ -299,14 +296,14 @@ public class Parser
     public Assignment parseAssignment() throws ScanErrorException
     {
         //System.out.println("parsing assignment");
-        if(env.hasProcedure(currentToken) || env.hasVariable(currentToken))
+        eat("ID : assign");
+        if(env.hasVariable(currentToken))
             System.out.println(currentToken + " Already exists");
         String temp = currentToken;
         //System.out.println("assigned var " + temp);
         eat(currentToken);
-        eat("SEP : :=");
+        eat("SEP : =");
         Expression exp = parseExpression();
-        eat("SEP : ;");
         return new Assignment(temp, exp);
     }
 }

@@ -5,7 +5,7 @@ package ast;
  * @author Ethan Cao
  * @version 10/25/21 
  */
-public class Condition 
+public class Condition extends Expression
 {
     String relop;
     Expression exp1;
@@ -29,26 +29,36 @@ public class Condition
      * @param env the environment to evaluate the result in
      * @return the result of the conditional statement
      */
-    public boolean eval(Environment env)
+    public int eval(Environment env)
     {
         int result1 = exp1.eval(env);
         int result2 = exp2.eval(env);
+        boolean returned;
         switch(relop)
         {
             case "SEP : =":
-                return result1 == result2;
+                returned = result1 == result2;
+                break;
             case "SEP : <>":
-                return result1 != result2;
+                returned = result1 != result2;
+                break;
             case "SEP : <":
-                return result1 < result2;
+                returned = result1 < result2;
+                break;
             case "SEP : >":
-                return result1 > result2;
+                returned = result1 > result2;
+                break;
             case "SEP : <=":
-                return result1 <= result2;
+                returned = result1 <= result2;
+                break;
             case "SEP : >=":
-                return result1 >= result2;
+                returned = result1 >= result2;
+                break;
             default:
                 throw new IllegalArgumentException(relop + " is not an relative operator");
         }
+        if(returned)
+                return 1;
+        return 0;
     }
 }

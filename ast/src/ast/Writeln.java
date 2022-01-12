@@ -30,10 +30,13 @@ public class Writeln extends Statement
     public void exec(Environment env)
     {
         System.out.println(exp.eval(env));
-        Scanner sc = new Scanner(System.in);
-        int in = sc.nextInt();
-        sc.close();
-        Assignment a = new Assignment(input, new Number(in));
-        a.exec(env);
+        if(input != null)
+        {
+            Scanner sc = new Scanner(System.in);
+            int in = sc.nextInt();
+            sc.close();
+            Assignment a = new Assignment(input, new Number(in));
+            a.exec(env);
+        }
     }
 }
