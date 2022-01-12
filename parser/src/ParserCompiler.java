@@ -1,12 +1,17 @@
 import ast.Emitter;
 import java.io.*;
 
+/**
+ * Runs a compiler for pascal
+ * @author Ethan Cao
+ * @version 1/12/22
+ */
 public class ParserCompiler 
 {
     /**
-     * no  
-     * @param args no  
-     * @throws Exception no  
+     * Compiles a Pascal program into assembly
+     * @param args String arguments
+     * @throws Exception if an illegal argument is scanned
      */
     public static void main(String[] args) throws Exception 
     {

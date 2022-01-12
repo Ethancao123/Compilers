@@ -1,15 +1,15 @@
 import java.io.*;
 /**
- * no
- * @author nobody
- * @version never
+ * Runner for the parser class
+ * @author Ethan Cao
+ * @version 1/12/22
  */
 public class ParserRunner 
 {
     /**
-     * no  
-     * @param args no  
-     * @throws Exception no  
+     * Parses and runs pascal code in a test file
+     * @param args String arguments
+     * @throws Exception if an illegal character is scanned
      */
     public static void main(String[] args) throws Exception 
     {
